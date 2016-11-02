@@ -1,11 +1,11 @@
 <?php
 
 // News
-define('_ND_BLOCK_ACOM', 'ã‚ªãƒ¼ã‚µãƒ¼ã‚³ãƒ¡ãƒ³ãƒˆ');
-define('_ND_BLOCK_UCOM', 'ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚³ãƒ¡ãƒ³ãƒˆ');
-define('_ND_BLOCK_MORE', 'éŽåŽ»ã®ç™»éŒ²');
+define('_ND_BLOCK_ACOM', '¥ª¡¼¥µ¡¼¥³¥á¥ó¥È');
+define('_ND_BLOCK_UCOM', '¥æ¡¼¥¶¡¼¥³¥á¥ó¥È');
+define('_ND_BLOCK_MORE', '²áµî¤ÎÅÐÏ¿');
 
 // Search
-define('_ND_BLOCK_COMMENT', 'ã‚³ãƒ¡ãƒ³ãƒˆ');
-define('_ND_BLOCK_FILE', 'ãƒ•ã‚¡ã‚¤ãƒ«');
-define('_ND_BLOCK_TEXT', 'ãƒ†ã‚­ã‚¹ãƒˆ');
+define('_ND_BLOCK_COMMENT', '¥³¥á¥ó¥È');
+define('_ND_BLOCK_FILE', '¥Õ¥¡¥¤¥ë');
+define('_ND_BLOCK_TEXT', '¥Æ¥­¥¹¥È');
