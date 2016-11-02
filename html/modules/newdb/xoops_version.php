@@ -1,7 +1,7 @@
 <?php
 	
 	$modversion['name'] = _ND_MOD_NAME;
-	$modversion['version'] = "1.1";
+	$modversion['version'] = "1.1.1";
 	$modversion['description'] = ' ';
 	$modversion['credits'] = 'Takuto Nishioka';
 	$modversion['author'] = 'Takuto Nishioka';
@@ -30,6 +30,7 @@
 	$modversion['tables']['13'] = 'newdb_fulltext_search';
 	$modversion['tables']['14'] = 'newdb_list_refine_option';
 	$modversion['tables']['15'] = 'newdb_file_search';
+	$modversion['tables']['16'] = 'newdb_list_textsearch';
 
 	# Admin things
 	$modversion['hasAdmin'] = 1;
