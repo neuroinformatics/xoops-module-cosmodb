@@ -924,11 +924,16 @@ class ListManager{
 	 */
 	function getValues($label_id, $label, $author, $date, $views, $dname_flg=0){
 
+		$myts =& MyTextSanitizer::getInstance();
+
 		# uname
 		$sql = "SELECT uname FROM ".$this->db->prefix('users')." WHERE uid='".$author."'";
 		$rs = $this->db->query($sql);
 		$row = $this->db->fetchArray($rs);
 		$uname = $row['uname'];
+		
+		$label = $myts->makeTboxData4Show($label);
+		
 		if($dname_flg){
 			$label = "<a href='detail.php?id=".$label_id."'>".$label."</a>";
 			$label_id4show = $label_id;

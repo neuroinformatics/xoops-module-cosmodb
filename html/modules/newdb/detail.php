@@ -45,6 +45,8 @@
 		$author = $row['uname'];
 
 		### Basic Information
+		
+		$com->label = $myts->makeTboxData4Show($com->label);
 
 		if(strstr($template, '{ID}')){
 			$template = str_replace('{ID}', $label_id, $template);
