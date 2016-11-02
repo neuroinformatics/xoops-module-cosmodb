@@ -23,7 +23,23 @@
 
 	if(isset($_GET['size'])) $lm->changeSize($_GET['size']);
 	if(isset($_GET['item'])) $lm->setPage($_GET['item'], $_GET['n']);
-	if(isset($_GET['refine'])){
+	
+	# text search
+	if(isset($_GET['tsearch'])){
+		# paging
+		if($_GET['tsearch'] == 'usedb'){
+			$lm->setTextFromDB();
+		
+		# new search
+		}else{
+			$target = $myts->stripSlashesGPC($_GET['text']);
+			$comp_id = intval($_GET['comp_id']);
+			$lm->setTextbox($comp_id, $target);
+		}	
+	
+
+	# refine
+	}elseif(isset($_GET['refine'])){
 
 		if(isset($_GET['all'])){
 			$lm->refine_flg = 0;
@@ -86,7 +102,7 @@
 	
 	switch($lm->type){
 		# LIST
-		case '1':
+		case '1':		
 			$pl = $lm->getPagelink();
 			echo "<script language='JavaScript' src='tab.js'></script>\n";
 			echo "<script language='JavaScript' src='clipboard.js'></script>\n";
@@ -96,12 +112,13 @@
 			echo "<td>".$pl."</td>";
 			echo "</tr></table>";
 			echo "<table style='width:100%; margin-bottom:20px'><tr>";
+			echo "<td>".$lm->getTextbox()."</td>";
 			echo "<td style='text-align:right'>".$lm->getSortbox()."</td>";
 			echo "</tr></table>";
 
 			echo "<table class='list_table'>";
 			echo "<tr>".$lm->list_th."</tr>";
-
+			
 			for($i=0; $i<count($label_list); $i++){
 				$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_master')." WHERE label_id='".$label_list[$i]."'";
 				$rs = $xoopsDB->query($sql);
@@ -112,12 +129,14 @@
 			echo "</table><br>".$pl;
 
 			# refine box
-			echo "<br><center><a href=\"javascript:seltab('rbox', 'head', 10, 1)\">"._ND_LIST_REFINE."</a></center>";
-			echo "<div id='rbox1' style='display:none; margin:0'><center>";
+			echo "<br><center>";
+			echo "<a href=\"javascript:seltab('rbox', 'head', 10, 1)\"";
+			echo " onclick=\"javascript:this.style.display='none'\">"._ND_LIST_REFINE."</a></center>";
+			echo "<div id='rbox1' style='display:none; margin-top:10px'><center>";
 			echo "<form method='GET' action='list.php' style='margin-top:0'>";
 			echo $lm->getRefinebox();
 			echo "</form>";
-			echo "<form method='POST' action='kws.php' style='margin:0px'>";
+			echo "<form method='POST' action='kws.php' style='margin-top:5px'>";
 			echo "<input type='submit' value='"._ND_LIST_KEYREFINE."' name='srefine' class='button'> ";
 			if($uid && $lm->refine_flg) echo "<input type='submit' value='"._ND_LIST_SAVELIST."' name='ssave' class='button'>";
 			echo "<input type='hidden' value='".$lm->uid."' name='user'>";
@@ -136,7 +155,8 @@
 			echo "<td>".$pl."</td>";
 			echo "</tr></table>";
 			echo "<table style='width:100%; margin-bottom:20px'><tr>";
-			echo "<td style='text-align:right'>".$lm->getSortbox()."</td>";
+			echo "<td style='text-align:right'>".$lm->getSortbox()."</td></tr><tr>";
+			echo "<td style='text-align:right'>".$lm->getTextbox('35%')."</td>";
 			echo "</tr></table>";
 		
 			echo "<table><tr>";
@@ -208,12 +228,14 @@
 			echo "</tr></table><br>".$pl;
 
 			# refine box
-			echo "<br><center><a href=\"javascript:seltab('rbox', 'head', 10, 1)\">"._ND_LIST_REFINE."</a></center>";
-			echo "<div id='rbox1' style='display:none; margin:0'><center>";
+			echo "<br><center>";
+			echo "<a href=\"javascript:seltab('rbox', 'head', 10, 1)\"";
+			echo " onclick=\"javascript:this.style.display='none'\">"._ND_LIST_REFINE."</a></center>";
+			echo "<div id='rbox1' style='display:none; margin-top:10px'><center>";
 			echo "<form method='GET' action='list.php' style='margin-top:0'>";
 			echo $lm->getRefinebox();
 			echo "</form>";
-			echo "<form method='POST' action='kws.php' style='margin:0px'>";
+			echo "<form method='POST' action='kws.php' style='margin-top:5px'>";
 			echo "<input type='submit' value='"._ND_LIST_KEYREFINE."' name='srefine' class='button'> ";
 			if($uid && $lm->refine_flg) echo "<input type='submit' value='"._ND_LIST_SAVELIST."' name='ssave' class='button'>";
 			echo "<input type='hidden' value='".$lm->uid."' name='user'>";

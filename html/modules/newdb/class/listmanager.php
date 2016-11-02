@@ -20,6 +20,7 @@ class ListManager{
 	var $limit;
 	var $refine;
 	var $refine_flg;
+	var $tsearch_flg;
 	var $kws_flg;
 	var $uid;
 	var $item;
@@ -60,6 +61,7 @@ class ListManager{
 			$this->refine = array();
 			$this->refine_flg = 0;
 			$this->kws_flg = 0;
+			$this->tsearch_flg = 0;
 			$this->list_th = $this->setListTH($row['list_th']);
 
 			if($this->type == 2){
@@ -146,7 +148,7 @@ class ListManager{
 	 */
 	function __getThumbLink(){
 
-		$thumb_link = "<select name='size'>";
+		$thumb_link = " <select name='size'>";
 		for($i=0; $i<count($this->thumb_size); $i++){
 
 			$ts = explode(',', $this->thumb_size[$i]);
@@ -213,6 +215,10 @@ class ListManager{
 		$href.= "&sort_method=".$this->sort_method;
 		if($this->refine_flg){
 			$href.= "&refine=usedb";
+			$href.= "&user=".$this->uid;
+		}
+		if($this->tsearch_flg){
+			$href.= "&tsearch=usedb";
 			$href.= "&user=".$this->uid;
 		}
 		if($this->type == 2) $href.= "&size=".$this->thumb_active_size[0];
@@ -311,12 +317,106 @@ class ListManager{
 		if($this->kws_flg){
 			$sortbox.= "<input type='hidden' name='kws' value='paging'>\n";
 		}
+		if($this->tsearch_flg){
+			$sortbox.= "<input type='hidden' name='tsearch' value='usedb'>\n";
+			$sortbox.= "<input type='hidden' name='user' value='".$this->uid."'>\n";
+		}
 		$sortbox.= " <input type='submit' value='Sort' style='border:1px solid; background:white'>\n";
 		$sortbox.= "</form>\n";
 		
 		return $sortbox;
 	}
 	
+
+	###########################
+	## text search things
+	###########################
+
+	function getTextbox($width='60%'){
+		
+		$val = "";
+		$sql = "SELECT * FROM ".$this->db->prefix('newdb_component_master');
+		$sql.= " WHERE type='4' ORDER BY sort";
+		$rs = $this->db->query($sql);
+		if($this->db->getRowsNum($rs)){
+			$val.= "<form action='' method='GET'>";
+			$val.= "<select name='comp_id'>";
+			while($row = $this->db->fetchArray($rs)){
+				$val.= "<option value='".$row['comp_id']."'>".$row['tag']."</option>";
+			}		
+			$val.= "</select> ";
+			
+			$val.= "<input type='text' style='width:".$width."' name='text'";
+			if($this->tsearch_flg){
+				$sql = "SELECT * FROM ".$this->db->prefix('newdb_list_textsearch');
+				$sql.= " WHERE user='".$this->uid."'";
+				$rs = $this->db->query($sql);
+				$row = $this->db->fetchArray($rs);
+				$v = $row['text'];
+				$val.= " value='".$v."'> ";
+			}else{
+				$v = " "._ND_LIST_TSEARCH;
+				$val.= " value='".$v."' onclick=\"javascript:if(this.value == '".$v."') this.value=''\"> ";
+			}
+			$val.= "<input type='submit' name='tsearch' value='Go' style='background:white;border:1px solid'>";
+
+			if($this->type == 2){
+				$val.="<input type='hidden' name='size' value='".$this->thumb_active_size[0]."'>\n";	
+			}
+			$val.= "<input type='hidden' name='item' value='0'>\n";
+			$val.= "<input type='hidden' name='sort' value='".$this->sort_target."'>\n";	
+			$val.= "<input type='hidden' name='sort_method' value='".$this->sort_method."'>\n";	
+			$val.= "<input type='hidden' name='n' value='".$this->limit."'>\n";
+			$val.= "<input type='hidden' name='id' value='".$this->list_id."'>\n";		
+			$val.= "<input type='hidden' name='user' value='".$this->uid."'>\n";	
+			$val.= "</form>";
+		}
+		return $val;
+	}
+	
+	function setTextbox($comp_id, $target){
+	
+		$label = "";
+		$t = ""; $t2 = array();
+		$target = str_replace('　', ' ', $target);
+		$t2 = explode(' ', $target);
+		for($i=0; $i<count($t2); $i++){
+			if($t != '') $t.= " OR ";
+			$t.= "value like '%".$t2[$i]."%'";
+		}
+		
+		$sql = "SELECT * FROM ".$this->db->prefix('newdb_component');
+		$sql.= " WHERE comp_id='".$comp_id."' AND ".$t;
+		$rs = $this->db->query($sql);
+		while($row = $this->db->fetchArray($rs)){
+			if($label != "") $label.= ",";
+			$label.= $row['label_id'];
+		}
+		
+		$sql = "SELECT * FROM ".$this->db->prefix('newdb_list_textsearch');
+		$sql.= " WHERE user='".$this->uid."'";
+		$rs = $this->db->query($sql);
+		if($this->db->getRowsNum($rs)){
+			$sql = "DELETE FROM ".$this->db->prefix('newdb_list_textsearch');
+			$sql.= " WHERE user='".$this->uid."'";
+			$rs = $this->db->queryF($sql);			
+		}
+		
+		$sql = "INSERT INTO ".$this->db->prefix('newdb_list_textsearch');
+		$sql.= " VALUES('','".$this->uid."','".addslashes($target)."','".$label."')";
+		$rs = $this->db->queryF($sql);
+		$this->setTextFromDB();
+	}
+	
+	function setTextFromDB(){
+	
+		$this->tsearch_flg = 1;
+		$sql = "SELECT * FROM ".$this->db->prefix('newdb_list_textsearch');
+		$sql.= " WHERE user='".$this->uid."' ORDER BY ref_id DESC";
+		$rs = $this->db->query($sql);
+		$row = $this->db->fetchArray($rs);
+		$this->refine = explode(',', $row['labels']);
+	}
 	
 	###########################
 	## refine things    
@@ -720,8 +820,8 @@ class ListManager{
 
 		$label_list = $this->__getAllLabels();
 
-		#refine
-		if($this->refine_flg){
+		# refine or text search
+		if($this->refine_flg || $this->tsearch_flg){
 			$label_list2 = array();
 			for($i=0; $i<count($label_list); $i++){
 				if(in_array($label_list[$i], $this->refine)) 
@@ -731,7 +831,7 @@ class ListManager{
 			for($i=0; $i<count($label_list2); $i++)
 				$label_list[] = $label_list2[$i];
 		}
-
+		
 		# paging
 		$return_list = array();
 		$start = ($this->page - 1) * $this->limit;
@@ -796,7 +896,8 @@ class ListManager{
 		while($row = $this->db->fetchArray($rs)){
 
 			if(strstr($template,'{'.$row['name'].'}')){
-				$sql = "SELECT * FROM ".$this->db->prefix('newdb_component')." WHERE label_id='".$label_id."' AND comp_id='".$row['comp_id']."'";
+				$sql = "SELECT * FROM ".$this->db->prefix('newdb_component');
+				$sql.= " WHERE label_id='".$label_id."' AND comp_id='".$row['comp_id']."'";
 				$rs2 = $this->db->query($sql);
 				$value = '';
 				while($row2 = $this->db->fetchArray($rs2)){

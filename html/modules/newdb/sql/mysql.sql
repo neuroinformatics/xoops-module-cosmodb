@@ -8,7 +8,7 @@ CREATE TABLE newdb_master(
 
 	label_id int(10) NOT NULL auto_increment,
 
-	label char(30) NOT NULL,
+	label char(255) NOT NULL,
 	reg_date int(10) unsigned NOT NULL default '0',
 	users text NOT NULL,
 	author char(30) NOT NULL,
@@ -150,6 +150,14 @@ CREATE TABLE newdb_list_refine_option(
 	primary key(opt_id)
 );
 
+CREATE TABLE newdb_list_textsearch(
+	
+	ref_id int(20) NOT NULL auto_increment,
+	user char(32) NOT NULL,
+	text char(255),
+	labels text,
+	primary key(ref_id)
+);
 
 #
 # full text / file search

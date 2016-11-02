@@ -156,6 +156,7 @@ define("_ND_CONFIG_DELETE","Delete data");
 define("_ND_LIST_KEYREFINE","refine by keyword");
 define("_ND_LIST_SAVELIST","save this list");
 define("_ND_LIST_REFINE","refine");
+define("_ND_LIST_TSEARCH","search text type");
 
 # comment.php
 define("_ND_COMMENT_POST","Comment was registered.");
