@@ -232,7 +232,8 @@
 									
 								$img_tag = "<img src='".$img_url.$file."' ".$img_size." alt='".$file."' ";
 								$img_tag.= "id='".$cnt."' onmouseover=\"show('".$cnt."')\" onmouseout=\"hide('".$cnt."')\">";
-								$img_tag = "<a href='".$img_url.$file."' target='_blank'>".$img_tag."</a>";
+								$img_tag = "<a href='"."detail.php?id=".$row['label_id']."' target='_blank'>".$img_tag."</a>";
+								# $img_tag = "<a href='".$img_url.$file."' target='_blank'>".$img_tag."</a>";
 								$thumb_temp2 = $thumb_temp;
 								$thumb_temp2 = str_replace('{Image}', $img_tag, $thumb_temp);
 								

@@ -121,7 +121,7 @@ CREATE TABLE newdb_keyword(
 
 	kw_id int(10) NOT NULL auto_increment, 
 
-	keyword char(30) NOT NULL,
+	keyword char(128) NOT NULL,
 	path text,
 	sort int(10) NOT NULL default '0',
 

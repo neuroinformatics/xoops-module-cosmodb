@@ -36,8 +36,6 @@
 		$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_master')." WHERE label_id='".$lid."'";
 		$rs = $xoopsDB->query($sql);
 		$row = $xoopsDB->fetchArray($rs);
-		$row['label'] = $myts->makeTboxData4Show($row['label']);
-
 		if($xoopsModuleConfig['dname_flg']){
 			echo "<a href='detail.php?id=".$lid."'>".$row['label']." "._ND_COMMENTV_BACK."</a><br>";
 		}else{

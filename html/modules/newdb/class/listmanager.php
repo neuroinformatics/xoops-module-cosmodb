@@ -924,16 +924,11 @@ class ListManager{
 	 */
 	function getValues($label_id, $label, $author, $date, $views, $dname_flg=0){
 
-		$myts =& MyTextSanitizer::getInstance();
-
 		# uname
 		$sql = "SELECT uname FROM ".$this->db->prefix('users')." WHERE uid='".$author."'";
 		$rs = $this->db->query($sql);
 		$row = $this->db->fetchArray($rs);
 		$uname = $row['uname'];
-		
-		$label = $myts->makeTboxData4Show($label);
-		
 		if($dname_flg){
 			$label = "<a href='detail.php?id=".$label_id."'>".$label."</a>";
 			$label_id4show = $label_id;
@@ -943,19 +938,24 @@ class ListManager{
 		$template = $this->template;
 		
 		if(strstr($template, '{ID}')){
-			$template = str_replace('{ID}', $label_id4show, $template);
+			$replace_label = "<a href='detail.php?id=".$label_id."'>".$label_id4show."</a>";
+			$template = str_replace('{ID}', $replace_label, $template);
 		}
 		if(strstr($template, '{Data Name}')){
-			$template = str_replace('{Data Name}', $label, $template);
+			$replace_label = "<a href='detail.php?id=".$label_id."'>".$label."</a>";
+			$template = str_replace('{Data Name}', $replace_label, $template);
 		}
 		if(strstr($template, '{Author}')){
-			$template = str_replace('{Author}', $uname, $template);
+			$replace_uname = "<a href='detail.php?id=".$label_id."'>".$uname."</a>";
+			$template = str_replace('{Author}', $replace_uname, $template);
 		}
 		if(strstr($template, '{Creation Date}')){
-			$template = str_replace('{Creation Date}', date('Y-m-d', $date), $template);
+			$replace_date = "<a href='detail.php?id=".$label_id."'>".date('Y-m-d', $date)."</a>";
+			$template = str_replace('{Creation Date}', $replace_date, $template);
 		}
 		if(strstr($template, '{Views}')){
-			$template = str_replace('{Views}', $views, $template);
+			$replace_views = "<a href='detail.php?id=".$label_id."'>".$views."</a>";
+			$template = str_replace('{Views}', $replace_views, $template);
 		}
 	
 		# get component value
@@ -984,7 +984,8 @@ class ListManager{
 					}
 					$value.= $row2['value'];
 				}
-				$template = str_replace('{'.$row['name'].'}', $value, $template);
+				$replace_value = "<a href='detail.php?id=".$label_id."'>".$value."</a>";
+				$template = str_replace('{'.$row['name'].'}', $replace_value, $template);
 			}
 		}
 		
@@ -1021,7 +1022,8 @@ class ListManager{
 					}else{
 						$path = '';
 					}
-					$template = str_replace($ref, $path, $template);
+					$replace_path = "<a href='detail.php?id=".$label_id."'>".$path."</a>";
+					$template = str_replace($ref, $replace_path, $template);
 				}else{
 					break;
 				}
@@ -1039,7 +1041,8 @@ class ListManager{
 				if(!empty($dirs)) $dirs.=', ';
 				$dirs.= substr($row['name'], 0, 3);
 			}
-			$template = str_replace('{Dirs}', $dirs, $template);
+			$replace_dirs = "<a href='detail.php?id=".$label_id."'>".$dirs."</a>";
+			$template = str_replace('{Dirs}', $replace_dirs, $template);
 		}
 		
 		
@@ -1059,7 +1062,8 @@ class ListManager{
 					if(!empty($dirs)) $dirs.=', ';
 					$dirs.= substr($row['name'], 0, $num);
 				}
-				$template = str_replace('{Dirs '.$num.'}', $dirs, $template);
+				$replace_dirs = "<a href='detail.php?id=".$label_id."'>".$dirs."</a>";
+				$template = str_replace('{Dirs '.$num.'}', $replace_dirs, $template);
 			}
 		}				
 		
