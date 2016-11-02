@@ -1,7 +1,7 @@
 <?php
 	
 	$modversion['name'] = _ND_MOD_NAME;
-	$modversion['version'] = "1.0.1";
+	$modversion['version'] = "1.0.2";
 	$modversion['description'] = ' ';
 	$modversion['credits'] = 'Takuto Nishioka';
 	$modversion['author'] = 'Takuto Nishioka';

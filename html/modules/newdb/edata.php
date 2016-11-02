@@ -201,11 +201,8 @@
 					$suf.= strtolower($suf_array[$i]).'|'.strtoupper($suf_array[$i]);
 				}
 			}else{
-				$suffix = '';
+				$suf = '';
 			}
-
-			$suf = array();
-			if(!empty($suffix)) $suf = explode('|', $suffix);
 
 			if(is_uploaded_file($_FILES['userfile']['tmp_name'])){
 				$fname = $_FILES['userfile']['name'];
@@ -221,11 +218,14 @@
 					redirect_header(MOD_URL.'/detail.php?id='.$lid, 2, $mes);
 					break;
 				}
-
-				if(!empty($suffix)){
+				# white list
+				if(!empty($suf)){
+					$suffix = array();
+					$suffix = explode('|', $suf);
+				
 					$tmp = explode('.', $fname);
 					$tmp_suf = $tmp[count($tmp)-1];
-					if(in_array($tmp_suf, $suf)){
+					if(in_array($tmp_suf, $suffix)){
 						if(move_uploaded_file($tmp_name, $path.'/'.$fname)){
 							if(!$rd->regFile($fname, $did)) $mes = $rd->error();
 						}else{
@@ -234,6 +234,7 @@
 					}else{
 						$mes = _ND_EDATA_NSUF;
 					}
+				# all ok
 				}else{
 					if(move_uploaded_file($tmp_name, $path.'/'.$fname)){
 						if(!$rd->regFile($fname, $did)) $mes = $rd->error();
