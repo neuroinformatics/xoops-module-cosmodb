@@ -17,7 +17,6 @@
  * 	 echo $com->error();
  * }
  */
-
 class component
 {
     /**

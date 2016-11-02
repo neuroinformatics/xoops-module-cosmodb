@@ -12,4 +12,3 @@ $adminmenu[5]['title'] = _ND_INHERITE_ADMIN;
 $adminmenu[5]['link'] = 'admin/index.php?mode=inherite';
 //$adminmenu[6]['title'] = _ND_IMPORT_ADMIN;
 //$adminmenu[6]['link'] = "admin/index.php?mode=import";
-;

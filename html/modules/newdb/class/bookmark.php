@@ -173,7 +173,7 @@ class bookmark
             $sql .= " WHERE bf_id='".$bf_id[$i]."'";
             $rs = $this->db->query($sql);
             if ($rs) {
-                $j++;
+                ++$j;
             }
         }
 
@@ -187,7 +187,7 @@ class bookmark
             $sql .= " WHERE bf_id='".$bf_id[$i]."'";
             $rs = $this->db->query($sql);
             if ($rs) {
-                $j++;
+                ++$j;
             }
         }
 

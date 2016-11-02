@@ -5,7 +5,6 @@
  *
  * This register comment on the database.
  */
-
 class commentpost
 {
     public $myts;

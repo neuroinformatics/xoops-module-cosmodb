@@ -14,4 +14,3 @@
     // image file convert program for kanzaki lab.
     //include 'convert/convert.php';
     //Convert(EXTRACT_PATH, MOD_PATH, $label_id);
-;
