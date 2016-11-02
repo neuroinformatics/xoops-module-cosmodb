@@ -44,7 +44,7 @@
 		$row = $xoopsDB->fetchArray($rs);
 		$author = $row['uname'];
 
-		### Basic Infomation
+		### Basic Information
 
 		if(strstr($template, '{ID}')){
 			$template = str_replace('{ID}', $label_id, $template);
@@ -311,13 +311,26 @@
 		while($row = $xoopsDB->fetchArray($rs)){
 
 			if(strstr($template,'{'.$row['name'].'}')){
-				$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component')." WHERE label_id='".$label_id."' AND comp_id='".$row['comp_id']."'";
+				$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component');
+				$sql.= " WHERE label_id='".$label_id."' AND comp_id='".$row['comp_id']."'";
 				$rs2 = $xoopsDB->query($sql);
 				$value = '';
 				while($row2 = $xoopsDB->fetchArray($rs2)){
 					if($value) $value.= ', ';
+					
+					if($row['type']=='2' || $row['type']=='3'){
+						$row2['value'] = str_replace('{', '<img src="images/admin/', $row2['value']);
+						$row2['value'] = str_replace('}', '">', $row2['value']);
+					
+					}elseif($row['type']=='4'){
+						if($row['textmax']=='0'){
+							$row2['value'] = str_replace("\r\n", "\r", $row2['value']);
+							$row2['value'] = str_replace("\r", "\n", $row2['value']);
+							$row2['value'] = str_replace("\n", "<br>", $row2['value']);
+						}
+					}
 					$value.= $row2['value'];
-				}
+				}				
 				$template = str_replace('{'.$row['name'].'}', $value, $template);
 			}
 		}
@@ -351,8 +364,10 @@
 		}
 		
 		### Show detail page
-		
 		include XOOPS_ROOT_PATH.'/header.php';
+
+		$xoopsTpl->assign('xoops_pagetitle', $com->label);
+
 		include 'style.css';
 		echo $template;
 		include XOOPS_ROOT_PATH.'/footer.php';

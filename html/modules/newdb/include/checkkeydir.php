@@ -10,6 +10,9 @@
 		if(!is_dir($path.'/thumbnail') && !mkdir($path.'/thumbnail', 0777)){
 			redirect_header(MOD_URL, 2, 'thumbnail '._ND_DIR_FALSE);
 		}
+		if(!is_dir($path.'/caption') && !mkdir($path.'/caption', 0777)){
+			redirect_header(MOD_URL, 2, 'caption '._ND_DIR_FALSE);
+		}
 		if(!is_dir($path.'/data') && !mkdir($path.'/data', 0777)){
 			redirect_header(MOD_URL, 2, 'data '._ND_DIR_FALSE);
 		}

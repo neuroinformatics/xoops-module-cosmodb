@@ -94,6 +94,11 @@ class RegCopy{
 			if(isset($dammy[1]) && $dammy[1] == 'thumbnail'){
 				$this->directory = explode('/', str_replace($this->from_base_path.'/' ,'' , $file));
 				$this->directory[0] = $dammy[0];
+
+			# extract/dataname/caption/...
+			}else if(isset($dammy[1]) && $dammy[1] == 'caption'){
+				$this->directory = explode('/', str_replace($this->from_base_path.'/' ,'' , $file));
+				$this->directory[0] = $dammy[0];
 			
 			# insert 'data' directory
 			# extract/dataname/data/...

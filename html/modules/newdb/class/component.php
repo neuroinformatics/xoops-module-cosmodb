@@ -250,8 +250,11 @@ class Component{
 			}
 
 			$time = str_replace(' ', '<br>', $time);
-			$this->source .= "<tr><td  class='even' style='text-align:center; width:90px'>";
+			$this->source .= "<tr>";
+
+			$this->source .= "<td  class='even' style='text-align:center; width:90px'>";
 			$this->source .= $uname."<br>".$time."</td>";
+
 			$this->source .= "<td>".$subject.$message;	
 			$this->source .= "<div style='text-align:right; margin-top:20px'>".$edit.$delete."</div>";
 		}
@@ -354,8 +357,7 @@ class Component{
 
 
 	function getKeywordList(){
-	
-		
+
 		$sql = "SELECT keyword FROM ".$this->db->prefix('newdb_master')." WHERE label_id='".$this->labelid."'";
 		$rs = $this->db->query($sql);
 		$row = $this->db->fetchArray($rs);
@@ -492,7 +494,24 @@ class Component{
 
 				#--------------------
 				}else{
-					$return_value.= $file."</td>\n";
+					# image directory -> caption directory: thumbnail -> caption
+					$tmp_path = $img_path."$target[$i]";
+					$caption_path = str_replace('thumbnail', 'caption', $tmp_path);
+
+					# image file -> caption file: ex. file.jpg -> file.txt
+				 	$dot_pos = strrpos($file, '.');
+			  	$caption_file = substr($file, 0, $dot_pos).'.txt';
+					$caption_path = $caption_path."/$caption_file";
+
+					if(file_exists($caption_path)) {
+					   $fp = fopen($caption_path, 'r');
+					   $caption = '';
+					   while( !feof($fp) ) {
+					      $caption = $caption.fgets($fp).'<br>';
+					   }
+					   fclose($fp);
+					   $return_value.= $caption."</td>\n";
+					}
 				}
 					
 				if(!($cnt % $option[2])) $return_value.= "</tr><tr>";

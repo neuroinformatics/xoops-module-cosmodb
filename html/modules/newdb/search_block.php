@@ -35,6 +35,9 @@
 		case 'id':
 			$kw = intval($kw);
 			header("Location:".MOD_URL."/detail.php?id=".$kw);
+			
+		case 'dataname':
+			header("Location:".MOD_URL."/list.php?system=1&text=".$kw."&tsearch=Go&item=0&sort=1&sort_method=desc&n=20&id=1");
 			break;
 	}
 ?>

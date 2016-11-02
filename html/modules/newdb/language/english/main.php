@@ -131,7 +131,7 @@ define("_ND_BK_SD","Selected Data");
 define("_ND_BK_DATA","Data");
 
 # config.php
-define("_ND_CONFIG_INFOCHANGE","Data infomation was changed.");
+define("_ND_CONFIG_INFOCHANGE","Data information was changed.");
 define("_ND_CONFIG_KEYOK","Keyword was changed.");
 define("_ND_CONFIG_KEYNG","Error: Keyword didn't be changed.");
 define("_ND_CONFIG_DEL","Data was deleted.");
@@ -147,7 +147,7 @@ define("_ND_CONFIG_IMGUPOK","Thumnail was uploaded.");
 define("_ND_CONFIG_IMGUPNG","Error: Thumbnail didn't be uploaded.");
 define("_ND_CONFIG_UPSUF","Error: \"gif,bmp,jpg,jpeg,png\" are only permitted.");
 define("_ND_CONFIG_NFILESELECT","Select file.");
-define("_ND_CONFIG_INFO","Data infomation");
+define("_ND_CONFIG_INFO","Data information");
 define("_ND_CONFIG_KEYWORD","Keyword");
 define("_ND_CONFIG_THUMB","Thumbnail");
 define("_ND_CONFIG_DELETE","Delete data");
@@ -195,22 +195,36 @@ define("_ND_REG4","You can upload tar archive only.");
 define("_ND_REG5","Author Comment");
 define("_ND_REG6","is registered.");
 define("_ND_REG7","Finish!");
-define("_ND_REG8","Data Infomation Sheet");
-define("_ND_REG9","");
-define("_ND_REG10","Data Infomation Sheet");
+define("_ND_REG8","Data Information Sheet");
+define("_ND_REG9","* is required item.");
+define("_ND_REG10","Data Information Sheet");
 define("_ND_REG11","Data name");
 define("_ND_REG12","Comment");
 define("_ND_REG13","Other");
 define("_ND_REG14","Select Keywords");
 define("_ND_REG15","Upload data files");
+define("_ND_REG15_","Thumbnail");
 define("_ND_REG16","Select Keywords");
-define("_ND_REG17","");
+define("_ND_REG17","Keywords for this data");
 define("_ND_REG18","Select data files");
 define("_ND_REG19","tar archive only");
 define("_ND_REG20","Upload tar archive");
 define("_ND_REG21","Select uploaded file");
 define("_ND_REG22","submit");
 define("_ND_REG23","");
+
+define("_ND_REG_THUMB1","Thumbnail dir");
+define("_ND_REG_THUMB2","Thumbnail file");
+define("_ND_REG_THUMB3","Caption");
+
+define("_ND_REG24","Select thumbnail");
+define("_ND_REG25","You can upload only 1 thumbnail.");
+define("_ND_REG26", " is required.");
+define("_ND_REG27", " exceeds size limit.");
+define("_ND_REG28", "Item");
+define("_ND_REG29", "");
+define("_ND_REG30", " characters");
+
 
 # news.php
 define("_ND_NEWS_REGFILE","Registered file");

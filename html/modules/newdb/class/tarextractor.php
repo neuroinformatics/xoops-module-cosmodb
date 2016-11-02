@@ -112,6 +112,10 @@ class TarExtractor extends tar{
 				# extract/dataname/thumbnail/...
 				if(isset($dammy[1]) && $dammy[1] == 'thumbnail'){
 					$this->directory = explode('/', $file_path);
+
+				# extract/dataname/caption/...
+				}else if(isset($dammy[1]) && $dammy[1] == 'caption'){
+					$this->directory = explode('/', $file_path);
 				
 				# insert 'data' directory
 				# extract/dataname/data/...

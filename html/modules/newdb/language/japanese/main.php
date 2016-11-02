@@ -197,13 +197,14 @@ define("_ND_REG5","オーサーコメント");
 define("_ND_REG6","が登録されました.");
 define("_ND_REG7","データ登録完了");
 define("_ND_REG8","データシート");
-define("_ND_REG9","");
+define("_ND_REG9","* は必須項目です.");
 define("_ND_REG10","データシート");
 define("_ND_REG11","登録データ名");
 define("_ND_REG12","コメント");
-define("_ND_REG13","その他");
-define("_ND_REG14","キーワードを付ける");
-define("_ND_REG15","データファイルを付ける");
+define("_ND_REG13","追加オプション");
+define("_ND_REG14","キーワード");
+define("_ND_REG15","データファイル");
+define("_ND_REG15_","サムネイル");
 define("_ND_REG16","キーワード選択");
 define("_ND_REG17","データに対するキーワード");
 define("_ND_REG18","データファイル選択");
@@ -212,6 +213,18 @@ define("_ND_REG20","tar アップロード");
 define("_ND_REG21","アップロード済ディレクトリから選択");
 define("_ND_REG22","送信");
 define("_ND_REG23","選択したデータファイルのサイズによっては登録にかなり時間がかかります.");
+
+define("_ND_REG_THUMB1","サムネイルディレクトリ");
+define("_ND_REG_THUMB2","サムネイルファイル");
+define("_ND_REG_THUMB3","キャプション");
+
+define("_ND_REG24","サムネイル選択");
+define("_ND_REG25","ここではサムネイルをひとつだけ追加できます.");
+define("_ND_REG26", "が未入力です.");
+define("_ND_REG27", "が制限文字数を超えています.");
+define("_ND_REG28", "項目");
+define("_ND_REG29", "記入欄");
+define("_ND_REG30", "文字まで");
 
 # news.php
 define("_ND_NEWS_REGFILE","登録されたファイル");

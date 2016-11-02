@@ -33,8 +33,15 @@
 		# new search
 		}else{
 			$target = $myts->stripSlashesGPC($_GET['text']);
-			$comp_id = intval($_GET['comp_id']);
-			$lm->setTextbox($comp_id, $target);
+
+			# DataName search
+			if(isset($_GET['system'])){
+				$lm->setTextbox('2', $target, 'system');
+			
+			}else{
+				$comp_id = intval($_GET['comp_id']);
+				$lm->setTextbox($comp_id, $target);
+			}
 		}	
 	
 
@@ -55,30 +62,59 @@
 					$author.= intval($value);	
 				}
 			}
-			$from = strtotime(intval($_GET['year1']).'/'.intval($_GET['month1']).'/'.intval($_GET['day1']));
-			$to = strtotime(intval($_GET['year2']).'/'.intval($_GET['month2']).'/'.intval($_GET['day2']));
 			
+			$from = '';
+			$to = '';
+			if(isset($_GET['year1']) && isset($_GET['year2'])){
+				$from = strtotime(intval($_GET['year1']).'/'.intval($_GET['month1']).'/'.intval($_GET['day1']));
+				$to = strtotime(intval($_GET['year2']).'/'.intval($_GET['month2']).'/'.intval($_GET['day2']));
+			}
+
+			# custom componets
 			$component = array();
-			for($i=2; $i<4; $i++){
-				$rs = $xoopsDB->query("SELECT * FROM ".$xoopsDB->prefix('newdb_component_master')." WHERE type='".$i."'");
-				$n = $xoopsDB->getRowsNum($rs);
-				for($j=0; $j<$n; $j++){
-					($i == 3) ? $k = 'CC'.$j : $k = 'CR'.$j;
-					if(isset($_GET[$k])){
-						$comp_id = intval($_GET[$k.'_id']);
-						foreach($_GET[$k] as $value){
-							$value = $myts -> stripSlashesGPC($value);
-							$component[] = array($comp_id, $value);
-						}
+			
+			# ID number for custom field (custom radio, custom check...)
+			$custom_id = array('CR'=>0, 'CC'=>0, 'CT'=>0, 'CS'=>0);
+	
+			$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master');
+			$rs = $xoopsDB->query($sql." WHERE onoff_refine='0' ORDER BY sort");
+			while($row = $xoopsDB->fetchArray($rs)){
+
+				switch($row['type']){
+				case '2': $i = 'CR'.$custom_id['CR']; $j = $i.'_id'; $custom_id['CR']++; break;	# Radio
+				case '3': $i = 'CC'.$custom_id['CC']; $j = $i.'_id'; $custom_id['CC']++; break;	# Check
+				case '5': $i = 'CS'.$custom_id['CS']; $j = $i.'_id'; $custom_id['CS']++; break;	# Select
+				default : $i = '';
+				}
+								
+				if(!empty($i) && isset($_GET[$i])){
+					foreach($_GET[$i] as $value){
+						$value = $myts -> stripSlashesGPC($value);
+						$component[] = array($_GET[$j], $value);
 					}
 				}
 			}
+			
+			$mode = 0;	
+			if(isset($_GET['more'])) $mode = 1;
 
-			if(isset($_GET['more'])){
-				$lm->setRefine($author, $from, $to, $component, 1);
+		//	print_r($component);
+
+			# empty
+			if(empty($author) && empty($from) && empty($component)){
+				$refineby = 0;
+			# refine by author, date only
+			}elseif(empty($component) && (!empty($author) || !empty($from))){
+				$refineby = 1;
+			# refine by custom component only
+			}elseif(!empty($component) && empty($author) && empty($from)){
+				$refineby = 2;
+			# refine by both
 			}else{
-				$lm->setRefine($author, $from, $to, $component, 0);
+				$refineby = 3;
 			}
+
+			$lm->setRefine($author, $from, $to, $component, $mode, $refineby);
 		}
 	}
 

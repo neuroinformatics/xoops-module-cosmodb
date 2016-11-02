@@ -3,7 +3,7 @@
 	# this script is executed when new data is registered.
 	# 1: The uploaded data is moved into the extract directory. (register.php)
 	# 2: This script is executed. (exregister.php)
-	# 3: Register data infomation in the database. (register.php)
+	# 3: Register data information in the database. (register.php)
 	# 4: Finish.
 	
 	# you can use following variables.

@@ -7,6 +7,8 @@
 	include 'class/commentpost.php';
 	include 'include/getreglist.php';
 	include 'include/checkkeydir.php';
+
+	include XOOPS_ROOT_PATH.'/header.php';
 	
 	$perm = 0;
 	if($uid){
@@ -21,7 +23,6 @@
 	}
 	if(!$perm) redirect_header(MOD_URL, 2, _ND_NACCESS2);
 
-	
 	$error = '';
 	$data_name = '';
 	
@@ -29,6 +30,88 @@
 		$method = $myts->stripSlashesGPC($_POST['method']);
 	}else{
 		$method = '';
+	}
+
+	# check input data
+	$required='';
+	if($method == 'do_reg'){
+		$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master');
+		
+		# data name		
+		if($xoopsModuleConfig['dname_flg']){
+		 	$rs = $xoopsDB->query($sql." WHERE comp_id='2'");
+			$row = $xoopsDB->fetchArray($rs);
+			$dname = '';
+			if(empty($_POST['name'])){
+				$required .= $row['tag'].' '._ND_REG26.'<br>';
+			}else{
+				$dname = $_POST['name'];
+				if($row['textmax'] && strlen($dname) > $row['textmax']){
+					$required.=$row['tag'].' '._ND_REG27.'<br>';
+				}
+			}
+		}
+
+		# text check
+	 	$rs = $xoopsDB->query($sql." WHERE type='4'");
+		$n = $xoopsDB->getRowsNum($rs);
+		for($i=0;$i<$n;$i++){
+			(isset($_POST['CT'.$i])) ? $ct[$i] = $_POST['CT'.$i] : $ct[$i] = '';
+			$rs = $xoopsDB->query($sql." WHERE comp_id='".$_POST['CT'.$i.'_id']."'");
+			$row = $xoopsDB->fetchArray($rs);
+			if($row['nonull'] && $ct[$i]==''){
+				$required.=$row['tag'].' '._ND_REG26.'<br>';
+			}
+			if($row['textmax'] && strlen($ct[$i]) > $row['textmax']){
+				$required.=$row['tag'].' '._ND_REG27.'<br>';
+			}
+		}
+
+		# checkbox check
+	 	$rs = $xoopsDB->query($sql." WHERE type='3'");
+		$n = $xoopsDB->getRowsNum($rs);
+		for($i=0;$i<$n;$i++){
+			(isset($_POST['CC'.$i])) ? $cc[$i] = $_POST['CC'.$i] : $cc[$i] = '';
+			$rs = $xoopsDB->query($sql." WHERE comp_id='".$_POST['CC'.$i.'_id']."'");
+			$row = $xoopsDB->fetchArray($rs);
+
+			$flg = 0;
+			if(is_array($cc[$i])){
+				foreach($cc[$i] as $key => $value){
+					if(!empty($value)) $flg = 1;
+				}
+			}
+			if($row['nonull'] && !$flg){
+				$required.=$row['tag'].' '._ND_REG26.'<br>';
+			}
+		}
+				
+		# radio
+	 	$rs = $xoopsDB->query($sql." WHERE type='2'");
+		$n = $xoopsDB->getRowsNum($rs);
+		for($i=0;$i<$n;$i++){
+			(isset($_POST['CR'.$i])) ? $cr[$i] = $_POST['CR'.$i] : $cr[$i] = '';
+			$rs = $xoopsDB->query($sql." WHERE comp_id='".$_POST['CR'.$i.'_id']."'");
+			$row = $xoopsDB->fetchArray($rs);
+
+			if($row['nonull'] && empty($cr[$i])){
+				$required.=$row['tag'].' '._ND_REG26.'<br>';
+			}
+		}
+
+		
+		# select
+	 	$rs = $xoopsDB->query($sql." WHERE type='5'");
+		$n = $xoopsDB->getRowsNum($rs);
+		for($i=0;$i<$n;$i++){
+			if(isset($_POST['CS'.$i])){
+				$cs[$i] = $_POST['CS'.$i];
+			}
+		}
+		
+		if($required){
+			$method = '';
+		}
 	}
 	
 	switch($method){
@@ -126,10 +209,8 @@
 			if($error) redirect_header(MOD_URL.'/register.php', 2, $error);
 			checkKeyDir($label_id);
 
-
 			# extension program for advanced user
 			#include 'extension/exregister.php';
-
 	
 			# Register files
 			if(!$rdb -> regNewItems()){
@@ -139,29 +220,42 @@
 
 			# Register custom field (newdb_component)
 			# custom text
-			$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master')." WHERE type='4'";
-			$rs = $xoopsDB->query($sql);
-			$n = $xoopsDB->getRowsNum($rs);
+			$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master');
 
+			# select
+			$rs = $xoopsDB->query($sql." WHERE type='5'");
+			$n = $xoopsDB->getRowsNum($rs);
+			for($i=0; $i<$n ;$i++){
+				$cs = 'CS'.$i;
+				if(isset($_POST[$cs])){
+					$comp_id = intval($_POST[$cs.'_id']);
+					$cs_value = $myts -> stripSlashesGPC($_POST[$cs]);
+					$cs_value = addslashes($cs_value);
+					
+					$sql2 = "INSERT INTO ".$xoopsDB->prefix('newdb_component');
+					$sql2.= " VALUES('".$comp_id."', '".$label_id."', '".$cs_value."')";
+					$rs = $xoopsDB->query($sql2);
+				}
+			}
+
+			# text
+			$rs = $xoopsDB->query($sql." WHERE type='4'");
+			$n = $xoopsDB->getRowsNum($rs);
 			for($i=0; $i<$n ;$i++){
 				$ct = 'CT'.$i;
-				
 				if(isset($_POST[$ct]) && isset($_POST[$ct.'_id'])){
 					$comp_id = intval($_POST[$ct.'_id']);
-					
 					$ct_value = $myts -> stripSlashesGPC($_POST[$ct]);
 					$ct_value = addslashes($ct_value);
-					$sql = "INSERT INTO ".$xoopsDB->prefix('newdb_component');
-					$sql.= " VALUES('".$comp_id."', '".$label_id."', '".$ct_value."')";
-					$rs = $xoopsDB->query($sql);	
+					$sql2 = "INSERT INTO ".$xoopsDB->prefix('newdb_component');
+					$sql2.= " VALUES('".$comp_id."', '".$label_id."', '".$ct_value."')";
+					$rs = $xoopsDB->query($sql2);	
 				}
 			}
 			
 			# custom checkbox
-			$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master')." WHERE type='3'";
-			$rs = $xoopsDB->query($sql);
+			$rs = $xoopsDB->query($sql." WHERE type='3'");
 			$n = $xoopsDB->getRowsNum($rs);
-
 			for($i=0; $i<$n ;$i++){
 				$cc = 'CC'.$i;
 				if(isset($_POST[$cc])){
@@ -171,18 +265,16 @@
 						$cc_value = $myts -> stripSlashesGPC($value);
 						$cc_value = addslashes($cc_value);
 						
-						$sql = "INSERT INTO ".$xoopsDB->prefix('newdb_component');
-						$sql.= " VALUES('".$comp_id."', '".$label_id."', '".$cc_value."')";
-						$rs = $xoopsDB->query($sql);
+						$sql2 = "INSERT INTO ".$xoopsDB->prefix('newdb_component');
+						$sql2.= " VALUES('".$comp_id."', '".$label_id."', '".$cc_value."')";
+						$rs = $xoopsDB->query($sql2);
 					}
 				}
 			}
 
 			# custom radio
-			$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master')." WHERE type='2'";
-			$rs = $xoopsDB->query($sql);
+			$rs = $xoopsDB->query($sql." WHERE type='2'");
 			$n = $xoopsDB->getRowsNum($rs);
-
 			for($i=0; $i<$n ;$i++){
 				$cr = 'CR'.$i;
 				if(isset($_POST[$cr])){
@@ -190,9 +282,9 @@
 					$cr_value = $myts -> stripSlashesGPC($_POST[$cr]);
 					$cr_value = addslashes($cr_value);
 					
-					$sql = "INSERT INTO ".$xoopsDB->prefix('newdb_component');
-					$sql.= " VALUES('".$comp_id."', '".$label_id."', '".$cr_value."')";
-					$rs = $xoopsDB->query($sql);
+					$sql2 = "INSERT INTO ".$xoopsDB->prefix('newdb_component');
+					$sql2.= " VALUES('".$comp_id."', '".$label_id."', '".$cr_value."')";
+					$rs = $xoopsDB->query($sql2);
 				}
 			}
 
@@ -222,6 +314,62 @@
 			$cp->setType('auth');
 			$cp->register();
 
+			# Register thumbnail
+			$mes = '';
+			if (!empty($_POST['dir'])) {
+				$dir = EXTRACT_PATH.'/'.$label_id.'/thumbnail/'.$myts->stripSlashesGPC($_POST['dir']);
+				if(!is_dir($dir) && !mkdir($dir,0777)) {
+					$mes = "Not registered thumbnail image";
+				}
+			} else {
+				$mes = "Not registered thumbnail image";
+			}
+			if (!empty($mes)) redirect_header(MOD_URL.'/register.php', 2, $mes);
+
+			if (is_uploaded_file($_FILES['thumbfile']['tmp_name'])) {
+				$fname = $_FILES['thumbfile']['name'];
+				$tmp_name = $_FILES['thumbfile']['tmp_name'];
+
+
+				if(preg_match("/.*(\.gif)$/i", $fname) || preg_match("/.*(\.bmp)$/i", $fname) || 
+				   preg_match("/.*(\.jpg)$/i", $fname) || preg_match("/.*(\.jpeg)$/i", $fname)||
+				   preg_match("/.*(\.png)$/i", $fname)){
+					
+					if(move_uploaded_file($tmp_name, $dir.'/'.$fname)){
+						$mes = _ND_CONFIG_IMGUPOK;
+					}else{
+						$mes = _ND_CONFIG_IMGUPNG;
+					}
+				}else{
+					$mes = _ND_CONFIG_UPSUF;
+				}
+			}else{
+				$mes = _ND_CONFIG_NFILESELECT;
+			}
+
+			// caption
+			$mes = '';
+			if (!empty($_POST['caption'])) {
+        $caption_path = EXTRACT_PATH.'/'.$label_id.'/caption/'.$myts->stripSlashesGPC($_POST['dir']);
+        if (!is_dir($caption_path) && !mkdir($caption_path, 0777)){
+	        $mes = _ND_DIR_FALSE;
+				}
+
+				# image file -> caption file: ex. file.jpg -> file.txt
+
+				$dot_pos = strrpos($fname, '.');
+				$caption_file = substr($fname, 0, $dot_pos).'.txt';
+				$caption_path = $caption_path."/$caption_file";
+
+				$fp = fopen($caption_path, 'w');
+				fwrite($fp,$_POST['caption']);
+				fclose($fp);
+			}
+
+			# Increment post counter 2006/05/12
+			$user =new XoopsUser($uid);
+			$user->incrementPost();
+			
 			redirect_header(MOD_URL.'/detail.php?id='.$label_id, 2, _ND_REG7);
 			break;
 
@@ -230,77 +378,142 @@
 		 * register top
 		 */
 		default:
+			$const_mk = "<span style='color:red'>* </span>";
 			include XOOPS_ROOT_PATH.'/header.php';
 			include 'style.css';
 			echo "<script language='JavaScript' src='tab.js'></script>\n";
-			echo "<center>\n";
+			
+			if($required){
+				echo "<div style='color:red; margin:20px'>".$required."</div>";
+			}
+			
+			echo "<center>\n";			
 			echo "<form enctype='multipart/form-data' action='register.php' method='POST'>\n";
 
 			# datasheet
 			echo "<div class='title' style='margin-top:0'>"._ND_REG8."</div>\n";
 			echo "<div class='title_desc'>"._ND_REG9."</div>\n";
 
-			echo "<table class='list_table' style='width:500px;'>\n";
-			echo "<tr><th colspan='2'>"._ND_REG10."</th></tr>\n";
+			echo "<table class='list_table' style='width:550px;'>\n";
+			echo "<tr style='text-align:center'><th style='width:140px'>"._ND_REG28."</th><th>"._ND_REG29."</th></tr>\n";
 
 			$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master')." WHERE name='Data Name'";
 			$rs = $xoopsDB->query($sql);
 			$row = $xoopsDB->fetchArray($rs);
 			
 			if($xoopsModuleConfig['dname_flg']){
-				echo "<tr><td style='width:120px'><b>".$row['tag']."</b></td>";
-				echo "<td><input type='text' name='name' style='width:180px'></td></tr>\n";
+				if(!isset($dname)) $dname='';
+				echo "<tr><td style='width:120px' class='even'>".$const_mk."<b>".$row['tag']."</b><br>";			
+				echo "</td>";
+				echo "<td><input type='text' name='name' style='width:180px' value='".$dname."'>";
+
+				if($row['textmax']) echo "&nbsp;&nbsp;&nbsp;".$row['textmax']." "._ND_REG30;
+				echo "</td></tr>\n";
 			}	
 			if($xoopsModuleConfig['acom_flg']){
-				echo "<tr><td><b>"._ND_REG12."</b></td>";
+				echo "<tr><td class='even'><b>"._ND_REG12."</b></td>";
 				echo "<td><textarea name='comment' style='width:98%; height:120px'></textarea></td></tr>\n";
 			}
 			
-			# type 4:text, 3:checkbox, 2:radio
-			for($i=4; $i>1; $i--){
+			# type 5:select, 4:text, 3:checkbox, 2:radio
 					
-				$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master');
-				$sql.= " WHERE type='".$i."' ORDER BY sort";
-				$rs = $xoopsDB->query($sql);
-				$type_id=0;
-				while($row = $xoopsDB->fetchArray($rs)){
-					$comp_id = $row['comp_id'];
-
-					echo "<tr><td><b>".htmlspecialchars($row['tag'])."</b><br>";
-					echo htmlspecialchars($row['exp'])."</td><td>\n";
-
-					if($row['type'] == '2'){
-						$svalue = explode(',', $row['select_value']);
-						for($j=0; $j<count($svalue); $j++){
-							($svalue[$j] == $row['default_value']) ? $check=' checked' : $check='';
-							echo "<input type='radio' name='CR".$type_id."' value='".$svalue[$j]."' ".$check.">";
-							echo $svalue[$j]."&nbsp;&nbsp;\n";
-						}
-						echo "<input type='hidden' name='CR".$type_id."_id' value='".$comp_id."'>";
-
-					}elseif($row['type']=='3'){
-						$svalue = explode(',', $row['select_value']);
-						for($j=0; $j<count($svalue); $j++){
-							echo "<input type='checkbox' name='CC".$type_id."[]' value='".$svalue[$j]."'>";
-							echo $svalue[$j]."&nbsp;&nbsp;\n";
-						}
-						echo "<input type='hidden' name='CC".$type_id."_id' value='".$comp_id."'>";
+			$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master');
+			$sql.= " WHERE type <> '1' ORDER BY sort";
+			$rs = $xoopsDB->query($sql);
 				
-					}elseif($row['type']=='4'){
-						echo "<input type='text' name='CT".$type_id."' style='width:180px'>\n";
-						echo "<input type='hidden' name='CT".$type_id."_id' value='".$comp_id."'>";
-					}
+			# ID number for custom field (custom radio, custom check...)
+			$custom_id = array('CR'=>0, 'CC'=>0, 'CT'=>0, 'CS'=>0);
+				
+			while($row = $xoopsDB->fetchArray($rs)){
+				$comp_id = $row['comp_id'];
+				$textmax = $row['textmax'];
+				$nonull = $row['nonull'];
 
-					echo "</td></tr>\n";
-					$type_id ++;
+				echo "<tr><td style='width:120px' class='even'>";
+
+				if($nonull && ($row['type'] >= '2' && $row['type'] <= '4')){
+					echo $const_mk;
 				}
+
+				echo "<b>".htmlspecialchars($row['tag'])."</b><br>";
+				echo htmlspecialchars($row['exp'])."</td><td>\n";
+				
+				# CR(radio)
+				if($row['type'] == '2'){
+						$svalue = explode(',', $row['select_value']);
+						for($j=0; $j<count($svalue); $j++){
+							$check='';
+							if($required){
+								if($svalue[$j] == $cr[$custom_id['CR']]) $check=' checked';
+							}else{
+								if($svalue[$j] == $row['default_value']) $check=' checked';
+							}
+							echo "<input type='radio' name='CR".$custom_id['CR']."' value='".$svalue[$j]."' ".$check.">";
+							$tmp = str_replace('{', '<img src="images/admin/', $svalue[$j]);
+							$tmp = str_replace('}', '">', $tmp);
+							echo $tmp."&nbsp;&nbsp;\n";
+						}
+						echo "<input type='hidden' name='CR".$custom_id['CR']."_id' value='".$comp_id."'>";
+						$custom_id['CR']++;
+			
+				# CC(check)
+				}elseif($row['type']=='3'){
+					$svalue = explode(',', $row['select_value']);
+					for($j=0; $j<count($svalue); $j++){
+						$checked='';
+						if(!empty($cc[$custom_id['CC']])){
+							if(in_array($svalue[$j], $cc[$custom_id['CC']])){
+								$checked = ' checked';
+							}
+						}
+						echo "<input type='checkbox' name='CC".$custom_id['CC']."[]' value='".$svalue[$j]."' ".$checked.">";
+						$tmp = str_replace('{', '<img src="images/admin/', $svalue[$j]);
+						$tmp = str_replace('}', '">', $tmp);
+						echo $tmp."&nbsp;&nbsp;\n";
+					}
+					echo "<input type='hidden' name='CC".$custom_id['CC']."_id' value='".$comp_id."'>";
+					$custom_id['CC']++;
+				
+				# CT(text)
+				}elseif($row['type']=='4'){
+					if(!isset($ct[$custom_id['CT']])) $ct[$custom_id['CT']] = '';
+					if($textmax){
+						echo "<input type='text' name='CT".$custom_id['CT']."' style='width:180px' value='".$ct[$custom_id['CT']]."'>\n";
+						echo "&nbsp;&nbsp;&nbsp;".$textmax." "._ND_REG30;
+					}else{
+						echo "<textarea name='CT".$custom_id['CT']."' style='width:98%; height:60px'>".$ct[$custom_id['CT']]."</textarea>\n";
+					}
+					echo "<input type='hidden' name='CT".$custom_id['CT']."_id' value='".$comp_id."'>";
+					$custom_id['CT']++;
+				
+				# CS(select)
+				}elseif($row['type'] == '5'){
+						$svalue = explode(',', $row['select_value']);
+						echo "<select name='CS".$custom_id['CS']."'>";
+						for($j=0; $j<count($svalue); $j++){
+							$check='';
+							if($required){
+								if($svalue[$j] == $cs[$custom_id['CS']]) $check=' selected';
+							}else{
+								if($svalue[$j] == $row['default_value']) $check=' selected';
+							}
+							echo "<option value='".$svalue[$j]."' ".$check.">".$svalue[$j]."</option>\n";
+						}
+						echo "</select>";
+						echo "<input type='hidden' name='CS".$custom_id['CS']."_id' value='".$comp_id."'>";
+						$custom_id['CS']++;
+				}
+
+				echo "</td></tr>\n";
 			}
 
-			echo "<tr><td><b>"._ND_REG13."</b></td>";
+			# options
+			echo "<tr><td class='even'><b>"._ND_REG13."</b></td>";
 			echo "<td><a href=\"javascript:seltab('box', 'head', 10, 1)\">"._ND_REG14."</a>";
 			if($xoopsModuleConfig['use_datafunc']){
-				echo " / <a href=\"javascript:seltab('box', 'head', 10, 2)\">"._ND_REG15."</a>";
+				echo " | <a href=\"javascript:seltab('box', 'head', 10, 2)\">"._ND_REG15."</a>";
 			}
+			echo " | <a href=\"javascript:seltab('box', 'head', 10, 3)\">"._ND_REG15_."</a>";
 			echo "</td></tr></table>";
 
 			# keyword
@@ -349,6 +562,17 @@
 				}
 				echo "</div>";
 			}
+				
+			# thumbnail image
+			echo "<div id='box3' style='display:none'>\n";
+			echo "<div class='title'>"._ND_REG24."</div>\n";
+			echo "<div class='title_desc'>"._ND_REG25."</div>\n";
+			echo "<table class='list_table' style='width:500px;'>\n";
+			echo "<tr><td style='width:120px' class='even'><b>"._ND_REG_THUMB1."</b></td><td><input type='text' name='dir' size='8' value='img'></td></tr>";
+			echo "<tr><td class='even'><b>"._ND_REG_THUMB2."</b></td><td><input type='file' name='thumbfile'></td></tr>";
+			echo "<tr><td class='even'><b>"._ND_REG_THUMB3."</b></td><td><textarea name='caption' cols='40' style='width:98%;height:120px'></textarea></td></tr>";
+			echo "</table>";
+			echo "</div>";
 			
 			# submit
 			echo "<div class='title'>"._ND_REG22."</div>\n";

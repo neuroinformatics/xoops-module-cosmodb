@@ -23,18 +23,38 @@ CREATE TABLE newdb_master(
 #
 # type : 1 system, 2 radio, 3 checkbox, 4 text
 
+# old 
+#CREATE TABLE newdb_component_master(
+#
+#	comp_id int(10) NOT NULL auto_increment, 
+#
+#	tag char(30) NOT NULL,
+#	name char(30) NOT NULL,
+#	exp char(120),
+#	type int(2) NOT NULL,
+#	default_value char(200),
+#	select_value text,
+#	onoff int(2) NOT NULL default '0',
+#	sort int(10) NOT NULL default '0',
+#	
+#	primary key(comp_id)
+#);
+
 CREATE TABLE newdb_component_master(
 
 	comp_id int(10) NOT NULL auto_increment, 
 
-	tag char(30) NOT NULL,
-	name char(30) NOT NULL,
-	exp char(100),
+	tag char(100) NOT NULL,
+	name char(100) NOT NULL,
+	exp char(120),
 	type int(2) NOT NULL,
 	default_value char(200),
 	select_value text,
 	onoff int(2) NOT NULL default '0',
 	sort int(10) NOT NULL default '0',
+	nonull int(2) NOT NULL default '0',
+	textmax int(2) NOT NULL default '0',
+	onoff_refine int(2) NOT NULL default '0',
 	
 	primary key(comp_id)
 );

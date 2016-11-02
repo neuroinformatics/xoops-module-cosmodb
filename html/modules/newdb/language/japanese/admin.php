@@ -66,11 +66,23 @@ define("_ND_COMPONENT_TYPE","タイプ");
 define("_ND_COMPONENT_DEL","排除");
 define("_ND_COMPONENT_DEL_DESC","この項目を排除する場合はチェック");
 define("_ND_COMPONENT_SELECT_ITEM","選択項目");
-define("_ND_COMPONENT_SELECT_ITEM_DESC","タイプ:text 以外を選択した場合は, 選択項目を[,]で区切って入力.");
+define("_ND_COMPONENT_SELECT_ITEM_DESC","タイプ:text 以外を選択した場合は, 選択項目を[,]で区切って入力.<br><br>ファイルパスを{}で囲むと画像の表示が可能. 画像は images/admin に用意しておく.");
 define("_ND_COMPONENT_DEFAULT","初期値");
-define("_ND_COMPONENT_DEFAULT_DESC","タイプ:radio を選択した場合は上記選択項目より１つ選択.");
+define("_ND_COMPONENT_DEFAULT_DESC","タイプ:radio, select を選択した場合は上記選択項目より１つ選択.");
 define("_ND_COMPONENT_SRT","ソート");
 define("_ND_COMPONENT_REGITEM","登録されている項目");
+
+define("_ND_COMPONENT_REQUIRE","必須項目");
+define("_ND_COMPONENT_REQUIRE_DESC","必須項目の場合はチェック");
+define("_ND_COMPONENT_REFI","絞込み");
+define("_ND_COMPONENT_REFINE", "絞込みに使用するか");
+define("_ND_COMPONENT_REFINE_DESC","タイプ:text 以外を選択した場合");
+define("_ND_COMPONENT_STR","字数");
+define("_ND_COMPONENT_STRMAX","文字数制限");
+define("_ND_COMPONENT_STRMAX_DESC","0にすると無制限となり, textareaに拡張されます");
+define("_ND_COMPONENT_UNLIMITED","無制限");
+define("_ND_COMPONENT_TEXTONLY","textの場合のみ");
+define("_ND_COMPONENT_SORT1","登録画面, ソートボックスでの順序");
 
 # inherite.php
 define("_ND_INH_OK","データを継承しました.");
@@ -82,6 +94,22 @@ define("_ND_INH_TO"," に継承する. ");
 define("_ND_DETAIL_OK","変更しました.");
 define("_ND_DETAIL_NG","変更失敗しました.");
 define("_ND_DETAIL_TEMP","表示テンプレート");
+define("_ND_DETAIL_TEMPSHOW","テンプレート一覧");
+define("_ND_DETAIL_TEMPSHOW_DESC","詳細画面設定で指定できるテンプレート");
+define("_ND_DETAIL_HOWTO","指定方法");
+define("_ND_DETAIL_HOWTO_DESC","詳細");
+define("_ND_DETAIL_ACOM","Authorコメントを表示");
+define("_ND_DETAIL_UCOM","Userコメントを表示");
+define("_ND_DETAIL_KEY","登録キーワード一覧を表示");
+define("_ND_DETAIL_FILE","登録データファイルを表示");
+define("_ND_DETAIL_BOOK","ブックマーク登録画面へのリンクを表示");
+define("_ND_DETAIL_LINK","リンク登録画面へのリンクを表示");
+define("_ND_DETAIL_CONFIG","データコンフィグ画面へのリンクを表示");
+define("_ND_DETAIL_MANAGER","ファイルマネージャー画面へのリンクを表示");
+define("_ND_DETAIL_THUMB","サムネイルを表示<br>{Image 対象ディレクトリ 横サイズ|縦サイズ|一列に表示する数}");
+define("_ND_DETAIL_TAB","ページを区切ることが出来る<br>ex. {tab1}ページ1の内容{/tab}");
+define("_ND_DETAIL_TAB_DESC","{tab}で指定されたページを切り替えるリンク<br>ex. {href_tab1}1ページ目{/href_tab}");
+define("_ND_DETAIL_REF","指定された拡張子を持つファイルのパスをコピー出来るリンクを表示<br>(研究機関向け機能) {Ref 拡張子}");
 
 # list.php
 define("_ND_LIST_LIST","リスト形式");

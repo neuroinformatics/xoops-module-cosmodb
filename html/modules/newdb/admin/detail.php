@@ -51,11 +51,35 @@
 		echo "<div class='title_desc'>"._ND_DETAIL_ADMIN_DESC."</div>";
 
 		echo "<form action='".$url."' method='POST' style='margin:0; padding:0'>";
-		echo "<table class='list_table' style='width:500px'>";
+		echo "<table class='list_table' style='width:550px'>";
 		echo "<tr><th>"._ND_DETAIL_TEMP."</th></tr>";
 		echo "<tr><td><center>";
 		echo "<textarea style='width:100%; height:400px' name='template'>".$row['template']."</textarea>";
 		echo "</center></td></tr>";
+		echo "</table>";
+
+		echo "<div class='title'>"._ND_DETAIL_TEMPSHOW."</div>";
+		echo "<div class='title_desc'>"._ND_DETAIL_TEMPSHOW_DESC."</div>";
+		echo "<table class='list_table' style='width:550px'>";
+		echo "<tr><th style='width:150px'>"._ND_DETAIL_HOWTO."</th><th>"._ND_DETAIL_HOWTO_DESC."</th></tr>";
+		echo "<tr><td class='even'>{Acomment}</td><td>"._ND_DETAIL_ACOM."</td></tr>";
+		echo "<tr><td class='even'>{Ucomment}</td><td>"._ND_DETAIL_UCOM."</td></tr>";
+		echo "<tr><td class='even'>{Keyword}</td><td>"._ND_DETAIL_KEY."</td></tr>";
+		echo "<tr><td class='even'>{Dtree}</td><td>"._ND_DETAIL_FILE."</td></tr>";
+		echo "<tr><td class='even'>{AddBookmark}</td><td>"._ND_DETAIL_BOOK."</td></tr>";
+		echo "<tr><td class='even'>{AddLink}</td><td>"._ND_DETAIL_LINK."</td></tr>";
+		echo "<tr><td class='even'>{Config}</td><td>"._ND_DETAIL_CONFIG."</td></tr>";
+		echo "<tr><td class='even'>{FileManager}</td><td>"._ND_DETAIL_MANAGER."</td></tr>";
+		echo "<tr><td class='even'>{Image \$1 \$2|\$3|\$4}</td><td>"._ND_DETAIL_THUMB."</td></tr>";
+		echo "<tr><td class='even'>{tab\$1}</td><td>"._ND_DETAIL_TAB."</td></tr>";
+		echo "<tr><td class='even'>{href_tab\$1}</td><td>"._ND_DETAIL_TAB_DESC."</td></tr>";
+		echo "<tr><td class='even'>{Ref \$1}</td><td>"._ND_DETAIL_REF."</td></tr>";
+		
+		$sql = "SELECT * FROM ".$xoopsDB->prefix('newdb_component_master')." ORDER BY sort";
+		$rs = $xoopsDB->query($sql);
+		while($row = $xoopsDB->fetchArray($rs)){
+			echo "<tr><td class='even'>{".$row['name']."}</td><td>".$row['tag']."</td></tr>";		
+		}
 		echo "</table>";
 
 		echo "<table style='margin: 20px 0 20px 0; border:0'>";

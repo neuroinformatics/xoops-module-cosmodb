@@ -143,6 +143,9 @@
 				}
 			}
 
+			# Increment post counter 2006/05/12
+			$user =new XoopsUser($uid);
+  	                $user->incrementPost();
 		}else{
 			$ms = _ND_COMMENT_NPOST.'<br>'.$cp->error();
 		}

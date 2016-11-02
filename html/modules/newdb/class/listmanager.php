@@ -374,7 +374,8 @@ class ListManager{
 		return $val;
 	}
 	
-	function setTextbox($comp_id, $target){
+	# Search Data Name on condition that $system=1
+	function setTextbox($comp_id, $target, $system=0){
 	
 		$label = "";
 		$t = ""; $t2 = array();
@@ -385,8 +386,15 @@ class ListManager{
 			$t.= "value like '%".$t2[$i]."%'";
 		}
 		
-		$sql = "SELECT * FROM ".$this->db->prefix('newdb_component');
-		$sql.= " WHERE comp_id='".$comp_id."' AND ".$t;
+		if($system){
+			$t = str_replace('value like', 'label like', $t);
+			$sql = "SELECT * FROM ".$this->db->prefix('newdb_master');
+			$sql.= " WHERE ".$t;
+		}else{
+			$sql = "SELECT * FROM ".$this->db->prefix('newdb_component');
+			$sql.= " WHERE comp_id='".$comp_id."' AND ".$t;
+		}
+
 		$rs = $this->db->query($sql);
 		while($row = $this->db->fetchArray($rs)){
 			if($label != "") $label.= ",";
@@ -430,117 +438,141 @@ class ListManager{
 	 * @return $value (refine box)
 	 */
 	function getRefinebox(){
-	
-		# author
+		$retv='';
+
+		# ID number for custom field (custom radio, custom check...)
+		$custom_id = array('CR'=>0, 'CC'=>0, 'CT'=>0, 'CS'=>0);
+
 		$sql = "SELECT * FROM ".$this->db->prefix('newdb_component_master');
-		$sql.= " WHERE name='Author'";
-		$rs = $this->db->query($sql);
-		$row = $this->db->fetchArray($rs);
-		$value= "<table class='list_table' style='width:80%;'>\n";
-		$value.= "<tr><td style='width:15%'>".$row['tag']."</td><td>\n";
-		$value.= "<select name='author[]' size='5' MULTIPLE>\n";
-		
-		$sql = "SELECT uid,uname FROM ".$this->db->prefix('users');
-		$rs = $this->db->query($sql);
+		$rs = $this->db->query($sql." WHERE onoff_refine='0' ORDER BY sort");
 		while($row = $this->db->fetchArray($rs)){
-			$value.="<option value='".$row['uid']."'>".$row['uname']."</option>\n";
-		}
-		$value.= "</select></td>\n";
-		
-		# date
-		$sql = "SELECT * FROM ".$this->db->prefix('newdb_component_master');
-		$sql.= " WHERE name='Creation Date'";
-		$rs = $this->db->query($sql);
-		$row = $this->db->fetchArray($rs);
-		$value.= "<td style='width:15%'>".$row['tag']."</td><td>\n";		
-
-		$sql = "SELECT reg_date FROM ".$this->db->prefix('newdb_master')." ORDER BY reg_date asc";
-		$rs = $this->db->query($sql);
-		$year = array();
-		while($row = $this->db->fetchArray($rs)){
-			$d = date('Y', $row['reg_date']);
-			if(!in_array($d, $year)) $year[] = $d;
-		}
-		
-		for($i=1; $i<3; $i++){
-			($i==1) ? $value.="From <br>" : $value.="<br>To <br>";
-		
-			$value.="<select name='year".$i."'>\n";
-			for($j=0; $j<count($year); $j++){
-				if($i==2 && $j==count($year)-1){
-					$value.="<option value='".$year[$j]."' selected>".$year[$j]."</option>\n";
-				}else{
-					$value.="<option value='".$year[$j]."'>".$year[$j]."</option>\n";
-				}
-			}
-			$value.="</select>\n<select name='month".$i."'>\n";
-			for($j=1; $j<13; $j++){
-				if($i==2 && $j==12){
-					$value.="<option value='".$j."' selected>".$j."</option>\n";				
-				}else{
-					$value.="<option value='".$j."'>".$j."</option>\n";
-				}
-			}
-			$value.="</select>\n<select name='day".$i."'>\n";
-			for($j=1; $j<32; $j++){
-				if($i==2 && $j==31){
-					$value.="<option value='".$j."' selected>".$j."</option>\n";				
-				}else{
-					$value.="<option value='".$j."'>".$j."</option>\n";
-				}
-			}
-			$value.="</select>\n";
-		}
-		$value.= "</td></tr></table>\n";
-	
-		# custom items ($type 3:checkbox, 2:radio)
-		$value.= "<table class='list_table' style='width:80%; margin:10px 0 10px 0'>\n";
-		for($i=2; $i<4; $i++){
-			$sql = "SELECT * FROM ".$this->db->prefix('newdb_component_master');
-			$sql.= " WHERE type='".$i."' ORDER BY onoff, sort";
-			$rs = $this->db->query($sql);
-			$type_id=0;
-			while($row = $this->db->fetchArray($rs)){
-				$value.= "<tr><td style='width:20%'>".htmlspecialchars($row['tag'])."</td><td>";
-				$comp_id = $row['comp_id'];
-
-				if($row['type'] == '2'){
-					$svalue = explode(',', $row['select_value']);
-					for($j=0; $j<count($svalue); $j++){
-						$value.= "<input type='checkbox' name='CR".$type_id."[]' value='".$svalue[$j]."'>".$svalue[$j]."&nbsp;&nbsp;\n";
+			if($row['name']=='Views' || $row['name']=='ID' || $row['name']=='Data Name') continue;
+						
+			switch($row['type']){
+			# System
+			case '1':
+				if($row['name']=='Author'){
+					$retv.= "<table class='list_table' style='width:80%;'><tr>\n";
+					$retv.= "<td style='width:80px'>".$row['tag']."</td><td>\n";
+					$retv.= "<select name='author[]' size='5' MULTIPLE>\n";
+			
+					$rs2 = $this->db->query("SELECT uid,uname FROM ".$this->db->prefix('users'));
+					while($row2 = $this->db->fetchArray($rs2)){
+						$retv.="<option value='".$row2['uid']."'>".$row2['uname']."</option>\n";
 					}
-					$value.= "<input type='hidden' name='CR".$type_id."_id' value='".$comp_id."'>";
-
-				}elseif($row['type']=='3'){
-					$svalue = explode(',', $row['select_value']);
-					for($j=0; $j<count($svalue); $j++){
-						$value.= "<input type='checkbox' name='CC".$type_id."[]' value='".$svalue[$j]."'>".$svalue[$j]."&nbsp;&nbsp;\n";
-					}
-					$value.= "<input type='hidden' name='CC".$type_id."_id' value='".$comp_id."'>";
+					$retv.= "</select>";
+					$retv.= "</td></tr></table>\n";
+				
+				}elseif($row['name']=='Creation Date'){
+					$retv.= "<table class='list_table' style='width:80%;'><tr>\n";
+				  $retv.= "<td style='width:80px'>".$row['tag']."</td><td>\n";		
+				  $sql2 = "SELECT reg_date FROM ".$this->db->prefix('newdb_master')." ORDER BY reg_date";
+				  $rs2 = $this->db->query($sql2);
+				  $year = array();
+				  while($row2 = $this->db->fetchArray($rs2)){
+						$d = date('Y', $row2['reg_date']);
+						if(!in_array($d, $year)) $year[] = $d;
+				  }
+		
+				  for($i=1; $i<3; $i++){
+						($i==1) ? $retv.="From " : $retv.="&nbsp;&nbsp;To ";
+						$retv.="<select name='year".$i."'>\n";
+						for($j=0; $j<count($year); $j++){
+							if($i==2 && $j==count($year)-1){
+								$retv.="<option value='".$year[$j]."' selected>".$year[$j]."</option>\n";
+							}else{
+								$retv.="<option value='".$year[$j]."'>".$year[$j]."</option>\n";
+							}
+						}
+						$retv.="</select>\n<select name='month".$i."'>\n";
+						for($j=1; $j<13; $j++){
+							if($i==2 && $j==12){
+								$retv.="<option value='".$j."' selected>".$j."</option>\n";				
+							}else{
+								$retv.="<option value='".$j."'>".$j."</option>\n";
+							}
+						}	
+						$retv.="</select>\n<select name='day".$i."'>\n";
+						for($j=1; $j<32; $j++){
+							if($i==2 && $j==31){
+								$retv.="<option value='".$j."' selected>".$j."</option>\n";				
+							}else{
+								$retv.="<option value='".$j."'>".$j."</option>\n";
+							}
+						}
+						$retv.="</select>\n";
+				  }
+		  	  $retv.= "</td>";
+					$retv .= "</tr></table>\n";
 				}
-				$value.= "</td></tr>\n";
-				$type_id++;
+			break;
+
+			# Radio
+			case '2':
+				$retv.= "<table class='list_table' style='width:80%;'>\n";
+				$retv.= "<tr><td style='width:80px'>".htmlspecialchars($row['tag'])."</td><td>";
+				$svalue = explode(',', $row['select_value']);
+				for($j=0; $j<count($svalue); $j++){
+					$retv.= "<input type='checkbox' name='CR".$custom_id['CR']."[]' value='".$svalue[$j]."'>";
+					$svalue[$j] = str_replace('{', '<img src="images/admin/', $svalue[$j]);
+					$svalue[$j] = str_replace('}', '">', $svalue[$j]);
+					$retv.= $svalue[$j]."&nbsp;&nbsp;\n";
+				}
+				$retv.= "<input type='hidden' name='CR".$custom_id['CR']."_id' value='".$row['comp_id']."'>";
+				$retv.= "</td></tr></table>";
+				$custom_id['CR']++;
+				break;
+			
+			# Checkbox
+			case '3':
+				$retv.= "<table class='list_table' style='width:80%;'>\n";
+				$retv.= "<tr><td style='width:80px'>".htmlspecialchars($row['tag'])."</td><td>";
+				$svalue = explode(',', $row['select_value']);
+				for($j=0; $j<count($svalue); $j++){
+					$retv.= "<input type='checkbox' name='CC".$custom_id['CC']."[]' value='".$svalue[$j]."'>";
+					$svalue[$j] = str_replace('{', '<img src="images/admin/', $svalue[$j]);
+					$svalue[$j] = str_replace('}', '">', $svalue[$j]);
+					$retv.= $svalue[$j]."&nbsp;&nbsp;\n";
+				}
+				$retv.= "<input type='hidden' name='CC".$custom_id['CC']."_id' value='".$row['comp_id']."'>";
+				$retv.= "</td></tr></table>";
+				$custom_id['CC']++;
+				break;
+
+			# Select
+			case '5':
+				$retv.= "<table class='list_table' style='width:80%;'>\n";
+				$retv.= "<tr><td style='width:80px'>".htmlspecialchars($row['tag'])."</td><td>";
+				$svalue = explode(',', $row['select_value']);
+				for($j=0; $j<count($svalue); $j++){
+					$retv.= "<input type='checkbox' name='CS".$custom_id['CS']."[]' value='".$svalue[$j]."'>".$svalue[$j]."&nbsp;&nbsp;\n";
+				}
+				$retv.= "<input type='hidden' name='CS".$custom_id['CS']."_id' value='".$row['comp_id']."'>";
+				$retv.= "</td></tr></table>";
+				$custom_id['CS']++;
+				break;
+
+			default:			
 			}
 		}
-		$value.= "</table>\n";
 
+		$retv.="<br>";
 		if($this->type == 2){
-			$value.="<input type='hidden' name='size' value='".$this->thumb_active_size[0]."'>\n";	
+			$retv.="<input type='hidden' name='size' value='".$this->thumb_active_size[0]."'>\n";	
 		}
-		$value.= "<input type='hidden' name='sort' value='".$this->sort_target."'>\n";	
-		$value.= "<input type='hidden' name='sort_method' value='".$this->sort_method."'>\n";	
-		$value.= "<input type='hidden' name='id' value='".$this->list_id."'>\n";		
-		$value.= "<input type='hidden' name='n' value='".$this->limit."'>\n";
-		$value.= "<input type='hidden' name='item' value='0'>\n";
-		$value.= "<input type='hidden' name='refine' value='y'>\n";
-		$value.= "<input type='hidden' name='user' value='".$this->uid."'>\n";
+		$retv.= "<input type='hidden' name='sort' value='".$this->sort_target."'>\n";	
+		$retv.= "<input type='hidden' name='sort_method' value='".$this->sort_method."'>\n";	
+		$retv.= "<input type='hidden' name='id' value='".$this->list_id."'>\n";		
+		$retv.= "<input type='hidden' name='n' value='".$this->limit."'>\n";
+		$retv.= "<input type='hidden' name='item' value='0'>\n";
+		$retv.= "<input type='hidden' name='refine' value='y'>\n";
+		$retv.= "<input type='hidden' name='user' value='".$this->uid."'>\n";
 		if($this->refine_flg){
-			$value.= "<input type='submit' name='more' value='"._ND_CLASS_REFINE2."' style='border:1px solid black; background:white'> ";
+			$retv.= "<input type='submit' name='more' value='"._ND_CLASS_REFINE2."' style='border:1px solid black; background:white'> ";
 		}
-		$value.= "<input type='submit' name='do' value='"._ND_CLASS_REFINE."' style='border:1px solid black; background:white'> ";
-		$value.= "<input type='submit' name='all' value='"._ND_CLASS_SHOWALL."' style='border:1px solid black; background:white'> ";
-
-		return $value;
+		$retv.= "<input type='submit' name='do' value='"._ND_CLASS_REFINE."' style='border:1px solid black; background:white'> ";
+		$retv.= "<input type='submit' name='all' value='"._ND_CLASS_SHOWALL."' style='border:1px solid black; background:white'> ";
+		return $retv;
 	}
 	
 	
@@ -550,9 +582,10 @@ class ListManager{
 	 * setting refine option
 	 * @access public
 	 */
-	function setRefine($author, $from, $to, $component, $mode){
-
+	function setRefine($author, $from, $to, $component, $mode, $refineby){
 		$this->refine_flg = 1;
+		
+		# aurhor
 		$authors = '';
 		if(!empty($author)){
 			$author = explode(',', $author);
@@ -562,10 +595,15 @@ class ListManager{
 			}
 			if($authors != '') $authors = "(".$authors.") AND ";
 		}
+		
+		# date
+		if(empty($from)) $from = strtotime('1990/1/1');
+		if(empty($to)) $to = strtotime('2030/1/1');
 		$date = "(reg_date >= '".$from."' AND reg_date <= '".$to."')";
 
-		$tmp1 = array();	
-		$sql = "SELECT label_id FROM ".$this->db->prefix('newdb_master')." WHERE ".$authors." ".$date;
+		$tmp1 = array();
+		$sql = "SELECT label_id FROM ".$this->db->prefix('newdb_master');
+		$sql.= " WHERE ".$authors." ".$date;
 		$rs = $this->db->query($sql);
 		while($row = $this->db->fetchArray($rs)){
 			$tmp1[] = $row['label_id'];
@@ -581,19 +619,44 @@ class ListManager{
 			}
 		}
 
-		# check
-		$this->refine = array();
-		if(count($tmp2)){
-			for($i=0; $i<count($tmp1); $i++){
-				if(in_array($tmp1[$i], $tmp2)) $this->refine[] = $tmp1[$i];
-			}
-		}else{
+		# check 
+		# modified again by H.Ikeno, 2006/05/11
+		# change again by N.takuto 2006/08/28
+		#
+		# 0 empty
+		# 1 refine by author, date only
+		# 2 refine by custom component only
+		# 3 refine by both
+		#echo $refineby;
+		switch ($refineby){
+		case 0:
+ 	    $this->refine = array();
+      break;
+
+	  case 1:
 			$this->refine = $tmp1;
+			break;
+			
+ 		case 2:
+ 			$this->refine = $tmp2;
+ 			break;
+
+		case 3:
+			$this->refine = array();
+	    if(count($tmp2)){
+				for($i=0; $i<count($tmp1); $i++){
+					if(in_array($tmp1[$i], $tmp2)) $this->refine[] = $tmp1[$i];
+				}
+	    } else {
+				$this->refine = $tmp1;
+	    }
+	    break;
 		}
 		
 		# more (refine)
 		if($mode == 1){
-			$sql = "SELECT * FROM ".$this->db->prefix('newdb_list_refine')." WHERE user='".$this->uid."'";
+			$sql = "SELECT * FROM ".$this->db->prefix('newdb_list_refine');
+			$sql.= " WHERE user='".$this->uid."'";
 			$rs = $this->db->query($sql);
 			$row = $this->db->fetchArray($rs);
 			$before = explode(',', $row['labels']);
@@ -624,7 +687,7 @@ class ListManager{
 		return $tmp;
 	}
 	
-	
+	# for refine + keyword search
 	function setRefineFromDB(){
 	
 		$this->refine_flg = 1;
@@ -633,7 +696,8 @@ class ListManager{
 		$row = $this->db->fetchArray($rs);
 		$this->refine = explode(',', $row['labels']);
 	}
-	
+
+	# for refine + keyword search	
 	function getRefineFromDB(){
 
 		$sql = "SELECT * FROM ".$this->db->prefix('newdb_list_refine')." WHERE user='".$this->uid."'";
@@ -645,7 +709,6 @@ class ListManager{
 		for($i=0; $i<count($labels); $i++){
 			if($labels[$i] != '') $ret[] = $labels[$i];
 		}
-		
 		return $ret;
 	}
 
@@ -902,6 +965,18 @@ class ListManager{
 				$value = '';
 				while($row2 = $this->db->fetchArray($rs2)){
 					if($value) $value.= ', ';
+					
+					if($row['type']=='2' || $row['type']=='3'){
+						$row2['value'] = str_replace('{', '<img src="images/admin/', $row2['value']);
+						$row2['value'] = str_replace('}', '">', $row2['value']);
+					
+					}elseif($row['type']=='4'){
+						if($row['textmax']=='0'){
+							$row2['value'] = str_replace("\r\n", "\r", $row2['value']);
+							$row2['value'] = str_replace("\r", "\n", $row2['value']);
+							$row2['value'] = str_replace("\n", "<br>", $row2['value']);
+						}
+					}
 					$value.= $row2['value'];
 				}
 				$template = str_replace('{'.$row['name'].'}', $value, $template);
@@ -949,9 +1024,10 @@ class ListManager{
 		}
 		
 		# directories
+		$sql = "SELECT * FROM ".$this->db->prefix('newdb_item');
+		$sql.= " WHERE type='dir' AND path='' AND label_id='".$label_id."' ORDER BY name";
+
 		if(strstr($template, '{Dirs}')){
-			$sql = "SELECT * FROM ".$this->db->prefix('newdb_item');
-			$sql.= " WHERE type='dir' AND path='' AND label_id='".$label_id."' ORDER BY name";
 			$rs = $this->db->query($sql);
 			$dirs = '';
 			while($row = $this->db->fetchArray($rs)){
@@ -960,6 +1036,27 @@ class ListManager{
 			}
 			$template = str_replace('{Dirs}', $dirs, $template);
 		}
+		
+		
+		if(strstr($template, '{Dirs ')){
+			$st = 0; $end = 0;
+			$st = strpos($template, '{Dirs ', $end);
+			if($st > $end){
+				$end = strpos($template, '}', $st);
+				$ref = substr($template, $st, ($end - $st + 1));
+				$num = str_replace('{Dirs ', '', $ref);
+				$num = str_replace('}', '', $num);
+				$num = intval($num);
+
+				$rs = $this->db->query($sql);
+				$dirs = '';
+				while($row = $this->db->fetchArray($rs)){
+					if(!empty($dirs)) $dirs.=', ';
+					$dirs.= substr($row['name'], 0, $num);
+				}
+				$template = str_replace('{Dirs '.$num.'}', $dirs, $template);
+			}
+		}				
 		
 		return $template;
 	}
