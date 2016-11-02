@@ -1,0 +1,12 @@
+<table style='width:100%'>
+<{foreach from=$block.new_reg item=data}>
+  <tr>
+		<td style='border-bottom:1px dashed #ddd'><{$data.label}> </td>
+		<td style='width:12%; border-bottom:1px dashed #ddd'><{$data.user}></td>
+		<td style='width:100px; text-align:right; border-bottom:1px dashed #ddd'><{$data.date}></td>
+  </tr>
+<{/foreach}>
+</table>
+<div style="text-align:right">
+<a href="<{$block.news_url}>"><{$block.more}></a>
+</div>

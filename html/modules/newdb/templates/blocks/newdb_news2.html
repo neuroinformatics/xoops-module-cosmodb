@@ -1,0 +1,21 @@
+<div style="font-weight:bold"><{$block.acom}></div>
+<table style='width:100%'>
+<{foreach from=$block.acomment item=data}>
+  <tr>
+	  <td style='border-bottom:1px dashed #ddd'><{$data.subject}></td>
+		<td style='width:12%;border-bottom:1px dashed #ddd'><{$data.user}></td>
+		<td style='width:100px; text-align:right; border-bottom:1px dashed #ddd'><{$data.date}></td>
+  </tr>
+<{/foreach}>
+</table>
+
+<div style="margin-top:20px;font-weight:bold"><{$block.ucom}></div>
+<table style='width:100%'>
+<{foreach from=$block.ucomment item=data}>
+  <tr>
+	  <td style='border-bottom:1px dashed #ddd'><{$data.subject}></td>
+		<td style='width:12%;border-bottom:1px dashed #ddd'><{$data.user}></td>
+		<td style='width:100px; text-align:right; border-bottom:1px dashed #ddd'><{$data.date}></td>
+  </tr>
+<{/foreach}>
+</table>
