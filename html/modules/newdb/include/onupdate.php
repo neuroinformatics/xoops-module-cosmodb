@@ -165,7 +165,6 @@ SQL;
                 return false;
             }
         }
-
     }
 
     return true;

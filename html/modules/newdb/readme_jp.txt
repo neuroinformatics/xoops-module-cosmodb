@@ -16,14 +16,15 @@ https://sourceforge.jp/forum/forum.php?forum_id=8327
 
 【アップデート情報】
 
-【v 1.1.1 -> v1.2】
-
 ◆ バージョンアップ手順
 
     1. ファイルを上書き
     2. 管理画面からモジュールのアップデート
-    3. http://XOOPS_URL/modules/newdb/admin/upgrade/11_to_12.php を実行する
-      (alter table xoops_newdb_component_master ... ; が実行されます)
+
+【v 1.2 -> v1.3】
+累積的な不具合の修正
+
+【v 1.1.1 -> v1.2】
 
 ◆ 変更点
 
