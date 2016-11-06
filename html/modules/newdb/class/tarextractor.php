@@ -32,7 +32,7 @@ class TarExtractor extends Tar
      */
     public function __construct()
     {
-        $this->file_limit   = 288000000;
+        $this->file_limit   = 2000000000;
         $this->show_fname   = 0;
         $this->archive      = '';
         $this->extract_path = '';

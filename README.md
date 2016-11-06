@@ -1,5 +1,5 @@
 # CosmoDB
-![php](https://img.shields.io/badge/PHP-4.0-blue.svg)
+![php](https://img.shields.io/badge/PHP-5.3+-blue.svg)
 ![xoops](https://img.shields.io/badge/XOOPS-module-green.svg)
 ![license](https://img.shields.io/badge/license-GPL2.0-blue.svg)
 
@@ -21,7 +21,7 @@ CosmoDB has developed as XOOPS module so you can make original database by using
 If you want to have more information about XOOPS, visit [Cube Official Website](http://xoopscube.org/) or [XOOPS Website](http://xoops.org/)
 
 ## System Requirements
-XOOPS environment (PHP4 or PHP5, MySQL)
+XOOPS environment (PHP5+, MySQL)
 
 ## License
 General Public License (GPL)
