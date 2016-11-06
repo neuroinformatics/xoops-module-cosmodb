@@ -1,39 +1,40 @@
 <?php
 
+$mydirname = basename(__DIR__);
+
 $modversion['name']        = _ND_MOD_NAME;
-$modversion['version']     = '1.2.2';
+$modversion['version'] = '1.30';
 $modversion['description'] = ' ';
 $modversion['credits']     = 'Takuto Nishioka';
 $modversion['author']      = 'Takuto Nishioka';
 $modversion['official']    = 0;
 $modversion['image']       = 'images/logo.gif';
-$modversion['dirname']     = 'newdb';
+$modversion['dirname'] = $mydirname;
 
 // install
-$modversion['onInstall'] = 'sql/install.php';
+$modversion['onInstall'] = 'include/oninstall.php';
+$modversion['onUpdate'] = 'include/onupdate.php';
 
 // Database things
 $modversion['sqlfile']['mysql'] = 'sql/mysql.sql';
-$modversion['tables']['0']      = 'newdb_master';
-$modversion['tables']['1']      = 'newdb_component';
-$modversion['tables']['2']      = 'newdb_component_master';
-$modversion['tables']['3']      = 'newdb_item';
-$modversion['tables']['4']      = 'newdb_comment_topic';
-$modversion['tables']['5']      = 'newdb_comment';
-$modversion['tables']['6']      = 'newdb_keyword';
-$modversion['tables']['7']      = 'newdb_list';
-$modversion['tables']['8']      = 'newdb_list_refine';
-$modversion['tables']['9']      = 'newdb_detail';
-$modversion['tables']['10']     = 'newdb_bookmark_dir';
-$modversion['tables']['11']     = 'newdb_bookmark_file';
-$modversion['tables']['12']     = 'newdb_link';
-$modversion['tables']['13']     = 'newdb_fulltext_search';
-$modversion['tables']['14']     = 'newdb_list_refine_option';
-$modversion['tables']['15']     = 'newdb_file_search';
-$modversion['tables']['16']     = 'newdb_list_textsearch';
+$modversion['tables']['0'] = $mydirname.'_master';
+$modversion['tables']['1'] = $mydirname.'_component';
+$modversion['tables']['2'] = $mydirname.'_component_master';
+$modversion['tables']['3'] = $mydirname.'_item';
+$modversion['tables']['4'] = $mydirname.'_comment_topic';
+$modversion['tables']['5'] = $mydirname.'_comment';
+$modversion['tables']['6'] = $mydirname.'_keyword';
+$modversion['tables']['7'] = $mydirname.'_list';
+$modversion['tables']['8'] = $mydirname.'_list_refine';
+$modversion['tables']['9'] = $mydirname.'_detail';
+$modversion['tables']['10'] = $mydirname.'_bookmark_dir';
+$modversion['tables']['11'] = $mydirname.'_bookmark_file';
+$modversion['tables']['12'] = $mydirname.'_link';
+$modversion['tables']['13'] = $mydirname.'_fulltext_search';
+$modversion['tables']['14'] = $mydirname.'_list_refine_option';
+$modversion['tables']['15'] = $mydirname.'_file_search';
+$modversion['tables']['16'] = $mydirname.'_list_textsearch';
 
-//XOOPS Admin
-$modversion['system_menu']   = 1;
 // Admin things
 $modversion['hasAdmin']   = 1;
 $modversion['adminindex'] = 'admin/index.php';
@@ -46,7 +47,7 @@ $modversion['hasSearch'] = 0;
 $modversion['hasMain'] = 1;
 
 global $xoopsDB;
-$sql = 'SELECT list_id, name FROM ' . $xoopsDB->prefix('newdb_list');
+$sql = 'SELECT list_id, name FROM '.$xoopsDB->prefix($mydirname.'_list');
 $sql .= " WHERE onoff='0' ORDER BY sort";
 $rs = $xoopsDB->query($sql);
 $i  = 1;
@@ -68,17 +69,17 @@ $modversion['sub'][$i + 3]['url']  = 'register.php';
 // Blocks
 $modversion['blocks'][1]['file']      = 'search.php';
 $modversion['blocks'][1]['name']      = _ND_BLOCK_SEARCH;
-$modversion['blocks'][1]['show_func'] = 'b_newdb_search';
+$modversion['blocks'][1]['show_func'] = 'b_'.$mydirname.'_search';
 
 $modversion['blocks'][2]['file']      = 'news1.php';
 $modversion['blocks'][2]['name']      = _ND_BLOCK_NEWS1;
-$modversion['blocks'][2]['show_func'] = 'b_newdb_news1';
-$modversion['blocks'][2]['template']  = 'newdb_news1.html';
+$modversion['blocks'][2]['show_func'] = 'b_'.$mydirname.'_news1';
+$modversion['blocks'][2]['template'] = $mydirname.'_news1.html';
 
 $modversion['blocks'][3]['file']      = 'news2.php';
 $modversion['blocks'][3]['name']      = _ND_BLOCK_NEWS2;
-$modversion['blocks'][3]['show_func'] = 'b_newdb_news2';
-$modversion['blocks'][3]['template']  = 'newdb_news2.html';
+$modversion['blocks'][3]['show_func'] = 'b_'.$mydirname.'_news2';
+$modversion['blocks'][3]['template'] = $mydirname.'_news2.html';
 
 // Config
 $modversion['config'][1]['name']        = 'reg_perm';
