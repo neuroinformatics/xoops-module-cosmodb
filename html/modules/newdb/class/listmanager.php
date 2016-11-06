@@ -3,7 +3,7 @@
 /**
  * class ListManager.
  */
-class listmanager
+class ListManager
 {
     public $db;
     public $list_id;
@@ -28,7 +28,7 @@ class listmanager
     /**
      * Class Constructor.
      */
-    public function ListManager()
+    public function __construct()
     {
         $this->db = XoopsDatabaseFactory::getDatabaseConnection();
     }

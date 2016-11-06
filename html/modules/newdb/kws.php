@@ -100,7 +100,12 @@ function showHistory($user)
     echo '</table></center>';
 }
 
-function showForm($kw, $lm, $user = '')
+/**
+ * @param Keyword $kw
+ * @param         $lm
+ * @param string  $user
+ */
+function showForm(Keyword $kw, $lm, $user = '')
 {
     global $xoopsDB;
     $rs  = $xoopsDB->query('SELECT * FROM ' . $xoopsDB->prefix('newdb_list') . " WHERE onoff='0'");

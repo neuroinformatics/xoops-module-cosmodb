@@ -1,6 +1,6 @@
 <?php
 
-class bookmark
+class Bookmark
 {
     /**
      *    private.
@@ -16,7 +16,7 @@ class bookmark
      * @param $uid
      * @return bookmark
      */
-    public function Bookmark($uid)
+    public function __construct($uid)
     {
         $this->db          = XoopsDatabaseFactory::getDatabaseConnection();
         $this->uid         = $uid;

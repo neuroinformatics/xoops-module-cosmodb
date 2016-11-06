@@ -1,6 +1,6 @@
 <?php
 
-class dataedit
+class DataEdit
 {
     public $db;
     public $uid;
@@ -8,7 +8,7 @@ class dataedit
     public $labelid;
     public $list;
 
-    public function DataEdit($uid, $labelid, $label)
+    public function __construct($uid, $labelid, $label)
     {
         $this->db      = XoopsDatabaseFactory::getDatabaseConnection();
         $this->uid     = $uid;

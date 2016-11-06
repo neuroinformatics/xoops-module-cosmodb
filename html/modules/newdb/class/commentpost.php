@@ -5,7 +5,7 @@
  *
  * This register comment on the database.
  */
-class commentpost
+class CommentPost
 {
     public $myts;
     public $db;
@@ -21,7 +21,7 @@ class commentpost
     /**
      * Class Constructor.
      */
-    public function CommentPost()
+    public function __construct()
     {
         $this->myts    = MyTextSanitizer::getInstance();
         $this->db      = XoopsDatabaseFactory::getDatabaseConnection();

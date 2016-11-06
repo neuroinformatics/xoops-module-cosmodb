@@ -1,6 +1,6 @@
 <?php
 
-class regcopy
+class RegCopy
 {
     /**
      * public.
@@ -23,7 +23,7 @@ class regcopy
     /**
      * Class Constructor.
      */
-    public function RegCopy()
+    public function __construct()
     {
         $this->show_fname     = 0;
         $this->from_path      = '';
@@ -34,8 +34,6 @@ class regcopy
         $this->fname          = '';
         $this->directory      = array();
         $this->error          = '';
-
-        return true;
     }
 
     /**

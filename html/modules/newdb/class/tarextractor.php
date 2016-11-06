@@ -40,8 +40,6 @@ class TarExtractor extends Tar
         $this->error        = '';
         $this->directory    = array();
         $this->dir_path     = '';
-
-        return true;
     }
 
     /**

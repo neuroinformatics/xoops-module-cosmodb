@@ -1,11 +1,11 @@
 <?php
 
-class keyword
+class Keyword
 {
     public $db;
     public $lid;
 
-    public function Keyword()
+    public function __construct()
     {
         $this->db  = XoopsDatabaseFactory::getDatabaseConnection();
         $this->lid = '';

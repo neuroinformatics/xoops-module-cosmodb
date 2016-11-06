@@ -6,7 +6,7 @@
 function makeClone($oldName, $newName)
 {
     $dir = dir('.');
-    while (($ent = $dir->read()) != false) {
+    while (($ent = $dir->read()) !== false) {
         if (is_file($ent) && $ent !== 'clone.php' && $ent !== 'clone.php~') {
             echo "Modified: $ent <br>";
             $orgFile = '_' . $ent;

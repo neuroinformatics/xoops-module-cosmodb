@@ -17,7 +17,7 @@
  *     echo $com->error();
  * }
  */
-class component
+class Component
 {
     /**
      *    private.
@@ -38,7 +38,7 @@ class component
     /**
      * Class Constructor.
      */
-    public function Component()
+    public function __construct()
     {
         $this->db          = XoopsDatabaseFactory::getDatabaseConnection();
         $this->labe        = '';
