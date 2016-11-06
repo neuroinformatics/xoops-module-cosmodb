@@ -18,7 +18,7 @@ Keyword, comment and file search are available. You can make keywords by using a
 
 #### XOOPS module
 CosmoDB has developed as XOOPS module so you can make original database by using other XOOPS modules and themes.
-If you want to have more information about XOOPS, visit [Cube Official Website](http://xoopscube.org/).
+If you want to have more information about XOOPS, visit [Cube Official Website](http://xoopscube.org/) or [XOOPS Website](http://xoops.org/)
 
 ## System Requirements
 XOOPS environment (PHP5+, MySQL)
