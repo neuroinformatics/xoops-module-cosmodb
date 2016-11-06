@@ -3,8 +3,8 @@
 class regcopy
 {
     /**
- * public.
- */
+     * public.
+     */
     // for debug
     public $show_fname;
 
@@ -25,15 +25,15 @@ class regcopy
      */
     public function RegCopy()
     {
-        $this->show_fname = 0;
-        $this->from_path = '';
+        $this->show_fname     = 0;
+        $this->from_path      = '';
         $this->from_base_path = '';
-        $this->extract_path = '';
-        $this->dir_path = '';
-        $this->flist = array();
-        $this->fname = '';
-        $this->directory = array();
-        $this->error = '';
+        $this->extract_path   = '';
+        $this->dir_path       = '';
+        $this->flist          = array();
+        $this->fname          = '';
+        $this->directory      = array();
+        $this->error          = '';
 
         return true;
     }
@@ -48,25 +48,25 @@ class regcopy
      */
     public function setPath($from_path, $extract_path)
     {
-        $this->from_path = $from_path;
+        $this->from_path    = $from_path;
         $this->extract_path = $extract_path;
 
-        if (substr($from_path, -1) == '/') {
+        if (substr($from_path, -1) === '/') {
             $this->from_path = substr($from_path, 0, -1);
         }
-        if (substr($extract_path, -1) == '/') {
+        if (substr($extract_path, -1) === '/') {
             $this->base_path = substr($extract_path, 0, -1);
         }
 
         if (!is_dir($this->from_path)) {
-            $this->error = $this->from_path.' does not exist. (regcopy.php line '.__LINE__.')<br>';
+            $this->error = $this->from_path . ' does not exist. (regcopy.php line ' . __LINE__ . ')<br>';
 
             return false;
         }
 
         $dammy = explode('/', $this->from_path);
         for ($i = 0; $i < count($dammy) - 1; ++$i) {
-            $this->from_base_path .= $dammy[$i].'/';
+            $this->from_base_path .= $dammy[$i] . '/';
         }
         $this->from_base_path = substr($this->from_base_path, 0, -1);
 
@@ -76,6 +76,8 @@ class regcopy
     /**
      * doRegCopy.
      *
+     * @param $suffix
+     * @param $label_id
      * @return bool
      */
     public function doRegCopy($suffix, $label_id)
@@ -90,40 +92,40 @@ class regcopy
 
             //	make directories
             $this->directory = array();
-            $dammy = explode('/', str_replace($this->from_base_path.'/', '', $file));
-            $dammy[0] = $label_id;
+            $dammy           = explode('/', str_replace($this->from_base_path . '/', '', $file));
+            $dammy[0]        = $label_id;
 
             // extract/dataname/thumbnail/...
-            if (isset($dammy[1]) && $dammy[1] == 'thumbnail') {
-                $this->directory = explode('/', str_replace($this->from_base_path.'/', '', $file));
+            if (isset($dammy[1]) && $dammy[1] === 'thumbnail') {
+                $this->directory    = explode('/', str_replace($this->from_base_path . '/', '', $file));
                 $this->directory[0] = $dammy[0];
 
-            // extract/dataname/caption/...
-            } elseif (isset($dammy[1]) && $dammy[1] == 'caption') {
-                $this->directory = explode('/', str_replace($this->from_base_path.'/', '', $file));
+                // extract/dataname/caption/...
+            } elseif (isset($dammy[1]) && $dammy[1] === 'caption') {
+                $this->directory    = explode('/', str_replace($this->from_base_path . '/', '', $file));
                 $this->directory[0] = $dammy[0];
 
-            // insert 'data' directory
-            // extract/dataname/data/...
+                // insert 'data' directory
+                // extract/dataname/data/...
             } else {
                 $this->directory[] = $dammy[0];
                 $this->directory[] = 'data';
-                for ($i = 1; $i < count($dammy); ++$i) {
+                for ($i = 1, $iMax = count($dammy); $i < $iMax; ++$i) {
                     $this->directory[] = $dammy[$i];
                 }
             }
             $num = count($this->directory) - 1;
 
             for ($i = 0; $i < $num; ++$i) {
-                $this->dir_path = $this->extract_path.'/';
+                $this->dir_path = $this->extract_path . '/';
                 for ($j = 0; $j < $i; ++$j) {
-                    $this->dir_path .= $this->directory[$j].'/';
+                    $this->dir_path .= $this->directory[$j] . '/';
                 }
                 $this->dir_path .= $this->directory[$i];
 
                 if (!is_dir($this->dir_path)) {
                     if (!mkdir($this->dir_path, 0777)) {
-                        $this->error = 'mkdir ('.$this->dir_path.') false. (regcopy.php line '.__LINE__.')<br>';
+                        $this->error = 'mkdir (' . $this->dir_path . ') false. (regcopy.php line ' . __LINE__ . ')<br>';
 
                         return false;
                     }
@@ -131,14 +133,14 @@ class regcopy
             }
 
             // copy files;
-            $this->fname = $this->dir_path.'/'.$this->directory[$num];
+            $this->fname = $this->dir_path . '/' . $this->directory[$num];
             if ($this->show_fname) {
-                echo str_replace($this->extract_path.'/', '', $this->fname).'<br>';
+                echo str_replace($this->extract_path . '/', '', $this->fname) . '<br>';
             }
 
             // suffix check
             if (!empty($suffix)) {
-                $tmp = explode('.', $file);
+                $tmp     = explode('.', $file);
                 $tmp_suf = $tmp[count($tmp) - 1];
                 if (in_array($tmp_suf, $suf)) {
                     copy($file, $this->fname);
@@ -160,11 +162,11 @@ class regcopy
     {
         if ($handle = opendir($dir)) {
             while (false !== $file = readdir($handle)) {
-                if ($file != '.' && $file != '..') {
-                    if (is_dir($dir.'/'.$file)) {
-                        $this->__getFlist($dir.'/'.$file);
+                if ($file !== '.' && $file !== '..') {
+                    if (is_dir($dir . '/' . $file)) {
+                        $this->__getFlist($dir . '/' . $file);
                     } else {
-                        $this->flist[] = $dir.'/'.$file;
+                        $this->flist[] = $dir . '/' . $file;
                     }
                 }
             }
@@ -176,20 +178,20 @@ class regcopy
 
     public function doCopy($from_path, $extract_path, $suffix = '')
     {
-        if (substr($from_path, -1) == '/') {
+        if (substr($from_path, -1) === '/') {
             $from_path = substr($from_path, 0, -1);
         }
-        if (substr($extract_path, -1) == '/') {
+        if (substr($extract_path, -1) === '/') {
             $extract_path = substr($extract_path, 0, -1);
         }
 
         if (!is_dir($from_path)) {
-            $this->error = $from_path.' does not exist. (regcopy.php line '.__LINE__.')<br>';
+            $this->error = $from_path . ' does not exist. (regcopy.php line ' . __LINE__ . ')<br>';
 
             return false;
         }
         if (!is_dir($extract_path) && !mkdir($extract_path, 0777)) {
-            $this->error = 'mkdir ('.$extract_path.') false. (regcopy.php line '.__LINE__.')<br>';
+            $this->error = 'mkdir (' . $extract_path . ') false. (regcopy.php line ' . __LINE__ . ')<br>';
 
             return false;
         }
@@ -208,9 +210,9 @@ class regcopy
 
         if ($handle = opendir($from_path)) {
             while (false !== $file = readdir($handle)) {
-                if ($file != '.' && $file != '..') {
-                    $fname = $from_path.'/'.$file;
-                    $tofname = $extract_path.'/'.$file;
+                if ($file !== '.' && $file !== '..') {
+                    $fname   = $from_path . '/' . $file;
+                    $tofname = $extract_path . '/' . $file;
 
                     if (is_dir($fname)) {
                         if (!is_dir($tofname) && mkdir($tofname, 0777)) {
@@ -222,7 +224,7 @@ class regcopy
 
                         // suffix check
                         if (!empty($suffix)) {
-                            $tmp = explode('.', $fname);
+                            $tmp     = explode('.', $fname);
                             $tmp_suf = $tmp[count($tmp) - 1];
                             if (in_array($tmp_suf, $suf)) {
                                 copy($fname, $tofname);
@@ -253,14 +255,14 @@ class regcopy
      * __doDelDir.
      *
      * @param string $dir
-     * @param string $dir
+     * @param        $dir_pass
      */
     public function __doDelDir($dir, $dir_pass)
     {
         if ($handle = opendir($dir)) {
             while (false !== $file = readdir($handle)) {
-                if ($file != '.' && $file != '..') {
-                    $this->fname = $dir.'/'.$file;
+                if ($file !== '.' && $file !== '..') {
+                    $this->fname = $dir . '/' . $file;
 
                     if (is_dir($this->fname)) {
                         $this->__doDelDir($this->fname, $this->fname);

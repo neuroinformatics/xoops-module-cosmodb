@@ -3,7 +3,7 @@
 class bookmark
 {
     /**
-     *	private.
+     *    private.
      */
     public $db;
     public $uid;
@@ -13,12 +13,14 @@ class bookmark
 
     /**
      * Class Constructor.
+     * @param $uid
+     * @return bookmark
      */
     public function Bookmark($uid)
     {
-        $this->db = &Database::getInstance();
-        $this->uid = $uid;
-        $this->error = '';
+        $this->db          = XoopsDatabaseFactory::getDatabaseConnection();
+        $this->uid         = $uid;
+        $this->error       = '';
         $this->current_dir = '';
     }
 
@@ -54,8 +56,8 @@ class bookmark
 
         $menu_source = "<script language='JavaScript' src='tree.js'></script>\n";
         $menu_source .= "<script language='JavaScript'>\n";
-        $menu_source .= "var TREE_ITEMS = [['','',".$this->tree_item."];\n";
-        $menu_source .= 'var tree_tpl = { '.$tree_icon." };\n";
+        $menu_source .= "var TREE_ITEMS = [['',''," . $this->tree_item . "];\n";
+        $menu_source .= 'var tree_tpl = { ' . $tree_icon . " };\n";
         $menu_source .= "new tree (TREE_ITEMS, tree_tpl);\n";
         $menu_source .= "</script>\n";
 
@@ -64,20 +66,21 @@ class bookmark
 
     /**
      * __getItems (for DHTML tree menu).
+     * @param $dir
      */
     public function __getItems($dir)
     {
-        $sql = 'SELECT * FROM '.$this->db->prefix('newdb_bookmark_dir');
-        $sql .= " WHERE uid='".$this->uid."' AND pbd_id='".$dir."' ORDER BY sort";
+        $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_bookmark_dir');
+        $sql .= " WHERE uid='" . $this->uid . "' AND pbd_id='" . $dir . "' ORDER BY sort";
         $rs = $this->db->query($sql);
         while ($row = $this->db->fetchArray($rs)) {
-            $sql = 'SELECT * FROM '.$this->db->prefix('newdb_bookmark_file');
-            $sql .= " WHERE bd_id='".$row['bd_id']."'";
+            $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_bookmark_file');
+            $sql .= " WHERE bd_id='" . $row['bd_id'] . "'";
             $rs2 = $this->db->query($sql);
             $num = $this->db->getRowsNum($rs2);
 
-            $path = 'bookmark.php?bd='.$row['bd_id'];
-            $this->tree_item .= "['".$row['directory'].' ('.$num.")','".$path."',";
+            $path = 'bookmark.php?bd=' . $row['bd_id'];
+            $this->tree_item .= "['" . $row['directory'] . ' (' . $num . ")','" . $path . "',";
             $this->tree_item .= $this->__getItems($row['bd_id']);
         }
         $this->tree_item .= '],';
@@ -86,26 +89,31 @@ class bookmark
     /**
      * getBookmark.
      *
-     * @return bookmark items
+     * @param $bd_id
+     * @return array bookmark items
      */
     public function getBookmark($bd_id)
     {
-        $sql = 'SELECT * FROM '.$this->db->prefix('newdb_bookmark_dir')." WHERE bd_id='".$bd_id."'";
-        $rs = $this->db->query($sql);
-        $row = $this->db->fetchArray($rs);
+        $sql               = 'SELECT * FROM ' . $this->db->prefix('newdb_bookmark_dir') . " WHERE bd_id='" . $bd_id . "'";
+        $rs                = $this->db->query($sql);
+        $row               = $this->db->fetchArray($rs);
         $this->current_dir = $row['directory'];
 
-        $bf = array();
-        $sql = 'SELECT * FROM '.$this->db->prefix('newdb_bookmark_file');
-        $sql .= " WHERE uid='".$this->uid."' AND bd_id='".$bd_id."' ORDER BY label_id";
+        $bf  = array();
+        $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_bookmark_file');
+        $sql .= " WHERE uid='" . $this->uid . "' AND bd_id='" . $bd_id . "' ORDER BY label_id";
         $rs = $this->db->query($sql);
         while ($row = $this->db->fetchArray($rs)) {
-            $sql = 'SELECT * FROM '.$this->db->prefix('newdb_master');
-            $sql .= " WHERE label_id='".$row['label_id']."'";
-            $rs2 = $this->db->query($sql);
+            $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_master');
+            $sql .= " WHERE label_id='" . $row['label_id'] . "'";
+            $rs2  = $this->db->query($sql);
             $row2 = $this->db->fetchArray($rs2);
 
-            $bf[] = array('bf_id' => $row['bf_id'], 'label_id' => $row['label_id'], 'label' => $row2['label'], 'note' => $row['note']);
+            $bf[] = array('bf_id'    => $row['bf_id'],
+                          'label_id' => $row['label_id'],
+                          'label'    => $row2['label'],
+                          'note'     => $row['note']
+            );
         }
 
         return $bf;
@@ -117,12 +125,12 @@ class bookmark
      */
     public function checkDir()
     {
-        $sql = 'SELECT * FROM '.$this->db->prefix('newdb_bookmark_dir');
-        $sql .= " WHERE uid='".$this->uid."'";
+        $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_bookmark_dir');
+        $sql .= " WHERE uid='" . $this->uid . "'";
         $rs = $this->db->query($sql);
         if ($this->db->getRowsNum($rs) == 0) {
-            $sql = 'INSERT INTO '.$this->db->prefix('newdb_bookmark_dir');
-            $sql .= " VALUES('', '', 'unclassified', '".$this->uid."', '0')";
+            $sql = 'INSERT INTO ' . $this->db->prefix('newdb_bookmark_dir');
+            $sql .= " VALUES('', '', 'unclassified', '" . $this->uid . "', '0')";
             $rs = $this->db->queryF($sql);
         }
     }
@@ -130,16 +138,18 @@ class bookmark
     /**
      * checkChildDir.
      *
+     * @param $bd_id
+     * @param $bd_list
      * @return child directory id list
      */
     public function checkChildDir($bd_id, $bd_list)
     {
-        $sql = 'SELECT bd_id FROM '.$this->db->prefix('newdb_bookmark_dir');
-        $sql .= " WHERE pbd_id='".$bd_id."'";
+        $sql = 'SELECT bd_id FROM ' . $this->db->prefix('newdb_bookmark_dir');
+        $sql .= " WHERE pbd_id='" . $bd_id . "'";
         $rs = $this->db->query($sql);
         if ($this->db->getRowsNum($rs) > 0) {
             while ($row = $this->db->fetchArray($rs)) {
-                $bd_list .= $row['bd_id'].',';
+                $bd_list .= $row['bd_id'] . ',';
                 $bd_list = $this->checkChildDir($row['bd_id'], $bd_list);
             }
         }
@@ -149,11 +159,15 @@ class bookmark
 
     /**
      * File functions.
+     * @param $bd_id
+     * @param $lid
+     * @param $note
+     * @return bool
      */
     public function regNewFile($bd_id, $lid, $note)
     {
-        $sql = 'INSERT INTO '.$this->db->prefix('newdb_bookmark_file');
-        $sql .= " VALUES('','".$bd_id."','".$lid."','".$note."','".$this->uid."')";
+        $sql = 'INSERT INTO ' . $this->db->prefix('newdb_bookmark_file');
+        $sql .= " VALUES('','" . $bd_id . "','" . $lid . "','" . $note . "','" . $this->uid . "')";
         $rs = $this->db->query($sql);
         if ($rs) {
             return $this->db->getInsertId();
@@ -164,13 +178,13 @@ class bookmark
 
     public function updateFile($bf_id, $note, $bd_id)
     {
-        for ($i = 0, $j = 0; $i < count($bf_id); ++$i) {
-            $sql = 'UPDATE '.$this->db->prefix('newdb_bookmark_file');
-            $sql .= " SET note='".$note[$i]."'";
+        for ($i = 0, $j = 0, $iMax = count($bf_id); $i < $iMax; ++$i) {
+            $sql = 'UPDATE ' . $this->db->prefix('newdb_bookmark_file');
+            $sql .= " SET note='" . $note[$i] . "'";
             if ($bd_id != '') {
-                $sql .= " ,bd_id='".$bd_id."'";
+                $sql .= " ,bd_id='" . $bd_id . "'";
             }
-            $sql .= " WHERE bf_id='".$bf_id[$i]."'";
+            $sql .= " WHERE bf_id='" . $bf_id[$i] . "'";
             $rs = $this->db->query($sql);
             if ($rs) {
                 ++$j;
@@ -182,9 +196,9 @@ class bookmark
 
     public function deleteFile($bf_id)
     {
-        for ($i = 0, $j = 0; $i < count($bf_id); ++$i) {
-            $sql = 'DELETE FROM '.$this->db->prefix('newdb_bookmark_file');
-            $sql .= " WHERE bf_id='".$bf_id[$i]."'";
+        for ($i = 0, $j = 0, $iMax = count($bf_id); $i < $iMax; ++$i) {
+            $sql = 'DELETE FROM ' . $this->db->prefix('newdb_bookmark_file');
+            $sql .= " WHERE bf_id='" . $bf_id[$i] . "'";
             $rs = $this->db->query($sql);
             if ($rs) {
                 ++$j;
@@ -196,11 +210,15 @@ class bookmark
 
     /**
      * Directory functions.
+     * @param $pbd_id
+     * @param $dirname
+     * @param $sort
+     * @return bool
      */
     public function regNewDir($pbd_id, $dirname, $sort)
     {
-        $sql = 'INSERT INTO '.$this->db->prefix('newdb_bookmark_dir');
-        $sql .= " VALUES('','".$pbd_id."','".$dirname."','".$this->uid."','".$sort."')";
+        $sql = 'INSERT INTO ' . $this->db->prefix('newdb_bookmark_dir');
+        $sql .= " VALUES('','" . $pbd_id . "','" . $dirname . "','" . $this->uid . "','" . $sort . "')";
         $rs = $this->db->query($sql);
         if ($rs) {
             return $this->db->getInsertId();
@@ -211,8 +229,8 @@ class bookmark
 
     public function updateDir($set, $where)
     {
-        $sql = 'UPDATE '.$this->db->prefix('newdb_bookmark_dir');
-        $sql .= ' SET '.$set.' WHERE '.$where;
+        $sql = 'UPDATE ' . $this->db->prefix('newdb_bookmark_dir');
+        $sql .= ' SET ' . $set . ' WHERE ' . $where;
         $rs = $this->db->query($sql);
         if ($rs) {
             return true;
@@ -223,12 +241,12 @@ class bookmark
 
     public function deleteDir($bd_id)
     {
-        $sql = 'DELETE FROM '.$this->db->prefix('newdb_bookmark_file');
-        $sql .= " WHERE bd_id='".$bd_id."'";
+        $sql = 'DELETE FROM ' . $this->db->prefix('newdb_bookmark_file');
+        $sql .= " WHERE bd_id='" . $bd_id . "'";
         $rs = $this->db->query($sql);
         if ($rs) {
-            $sql = 'DELETE FROM '.$this->db->prefix('newdb_bookmark_dir');
-            $sql .= " WHERE bd_id='".$bd_id."'";
+            $sql = 'DELETE FROM ' . $this->db->prefix('newdb_bookmark_dir');
+            $sql .= " WHERE bd_id='" . $bd_id . "'";
             $rs = $this->db->query($sql);
             if ($rs) {
                 return true;
