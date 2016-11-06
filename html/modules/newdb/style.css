@@ -32,9 +32,11 @@ echo <<<E
 
 
 /* search */
-.stitle a{color:#0000ff; font-size:110%; text-decoration:underline; font-weight:bold}
+.stitle a{color:#0000ff; font-size:110%; text-decoration:underline; font-weight:bold;
+}
 .sinfo{color:#008000; font-weight:normal;}
-.sinfo a{color:#008000; text-decoration:underline; font-weight:normal}
+.sinfo a{color:#008000; text-decoration:underline; font-weight:normal;
+}
 
 
 /* header title */
@@ -60,7 +62,7 @@ echo <<<E
 /* header title for detail.php */
 
 .label_header{
-	color: rgb(219, 77, 77);
+	color: #db4d4d;
 	font-size:15px;
 	font-weight: bold;
 	border-bottom:1px solid #dddddd;
@@ -72,7 +74,7 @@ echo <<<E
 	text-align:left;
 	border-bottom:1px solid #dddddd;
 	margin-top:40px;
-	color: rgb(219, 77, 77);
+	color: #db4d4d;
 	font-weight: bold;
 }
 
