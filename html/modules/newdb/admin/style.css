@@ -2,50 +2,50 @@
 echo <<<E
 <style>
 
-.list_table{
-	text-align:left;
-	border-collapse: collapse; 
-	border: 1px solid #dedbde;
+          .list_table {
+    text-align: left;
+    border-collapse: collapse;
+    border: 1px solid #dedbde;
 }
 
-.list_table th{
-	text-align:center;
-	background:#5b7085;
-	border-top:1px solid #bdc7e7;
-	color:white
+.list_table th {
+    text-align: center;
+    background: #5b7085;
+    border-top: 1px solid #bdc7e7;
+    color: white;
 }
 
-.list_table th a{
-	color:white;
+.list_table th a {
+    color: white;
 }
 
-.list_table td{
-	padding:3px;
-	border: 1px solid #dedbde;
+.list_table td {
+    padding: 3px;
+    border: 1px solid #dedbde;
 }
 
-.list_odd{
-	background:#efefef;
+.list_odd {
+    background: #efefef;
 
 }
 
-.title{
-	width:80%;
-	text-align:left;
-	font-size:15px;
-	text-transform:uppercase;
-	border-bottom:1px solid #dddddd;
-	margin-top:40px;
-	color:#333333;
+.title {
+    width: 80%;
+    text-align: left;
+    font-size: 15px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #dddddd;
+    margin-top: 40px;
+    color: #333333;
 }
 
-.title_desc{
-	width:80%;
-	margin-bottom:30px;
-	text-align:right;
-	font-size:12px;
+.title_desc {
+    width: 80%;
+    margin-bottom: 30px;
+    text-align: right;
+    font-size: 12px;
 }
 
 </style>
-E;
-?>
+  E;
+  ?>

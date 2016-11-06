@@ -5,7 +5,7 @@
  *
  * This register comment on the database.
  */
-class commentpost
+class CommentPost
 {
     public $myts;
     public $db;
@@ -21,17 +21,17 @@ class commentpost
     /**
      * Class Constructor.
      */
-    public function CommentPost()
+    public function __construct()
     {
-        $this->myts = &MyTextSanitizer::getInstance();
-        $this->db = &Database::getInstance();
-        $this->method = '';
+        $this->myts    = MyTextSanitizer::getInstance();
+        $this->db      = XoopsDatabaseFactory::getDatabaseConnection();
+        $this->method  = '';
         $this->subject = '';
         $this->message = '';
-        $this->lid = -1;
-        $this->cid = -1;
-        $this->type = 'user';
-        $this->error = '';
+        $this->lid     = -1;
+        $this->cid     = -1;
+        $this->type    = 'user';
+        $this->error   = '';
     }
 
     public function setMethod($method)
@@ -51,17 +51,17 @@ class commentpost
 
     public function setLid($lid)
     {
-        $this->lid = intval($lid);
+        $this->lid = (int)$lid;
     }
 
     public function setCid($cid)
     {
-        $this->cid = intval($cid);
+        $this->cid = (int)$cid;
     }
 
     public function setUid($uid)
     {
-        $this->uid = intval($uid);
+        $this->uid = (int)$uid;
     }
 
     public function setType($type)
@@ -76,19 +76,19 @@ class commentpost
         switch ($this->method) {
             case 'new':
                 if (!$this->__regNew()) {
-                    $this->error = 'comment register error. (commentpost.php line '.__LINE__.')<br>';
+                    $this->error = 'comment register error. (commentpost.php line ' . __LINE__ . ')<br>';
                 }
                 break;
 
             case 'edit':
                 if (!$this->__update()) {
-                    $this->error = 'comment update error. (commentpost.php line '.__LINE__.')<br>';
+                    $this->error = 'comment update error. (commentpost.php line ' . __LINE__ . ')<br>';
                 }
                 break;
 
             case 'delete':
                 if (!$this->__delete()) {
-                    $this->error = 'comment delete error. (commentpost.php line '.__LINE__.')<br>';
+                    $this->error = 'comment delete error. (commentpost.php line ' . __LINE__ . ')<br>';
                 }
                 break;
 
@@ -110,23 +110,23 @@ class commentpost
         }
 
         if ($this->lid > 0) {
-            $sql = 'INSERT INTO '.$this->db->prefix('newdb_comment');
-            $sql .= " VALUES('','','".$this->subject."','".$this->message."','".time()."','".$this->uid."')";
+            $sql = 'INSERT INTO ' . $this->db->prefix('newdb_comment');
+            $sql .= " VALUES('','','" . $this->subject . "','" . $this->message . "','" . time() . "','" . $this->uid . "')";
             $rs = $this->db->query($sql);
             if (!$rs) {
                 return false;
             }
             $this->cid = $this->db->getInsertId($rs);
 
-            $sql = 'INSERT INTO '.$this->db->prefix('newdb_comment_topic');
-            $sql .= " VALUES('','".$this->lid."','".$this->cid."','".$this->type."')";
+            $sql = 'INSERT INTO ' . $this->db->prefix('newdb_comment_topic');
+            $sql .= " VALUES('','" . $this->lid . "','" . $this->cid . "','" . $this->type . "')";
             $rs = $this->db->query($sql);
             if (!$rs) {
                 return false;
             }
         } elseif ($this->cid > 0) {
-            $sql = 'INSERT INTO '.$this->db->prefix('newdb_comment');
-            $sql .= " VALUES('','".$this->cid."','".$this->subject."','".$this->message."','".time()."','".$this->uid."')";
+            $sql = 'INSERT INTO ' . $this->db->prefix('newdb_comment');
+            $sql .= " VALUES('','" . $this->cid . "','" . $this->subject . "','" . $this->message . "','" . time() . "','" . $this->uid . "')";
             $rs = $this->db->query($sql);
             if (!$rs) {
                 return false;
@@ -138,9 +138,9 @@ class commentpost
 
     public function __update()
     {
-        $sql = 'UPDATE '.$this->db->prefix('newdb_comment');
-        $sql .= " SET subject='".$this->subject."', message='".$this->message."'";
-        $sql .= " WHERE com_id='".$this->cid."'";
+        $sql = 'UPDATE ' . $this->db->prefix('newdb_comment');
+        $sql .= " SET subject='" . $this->subject . "', message='" . $this->message . "'";
+        $sql .= " WHERE com_id='" . $this->cid . "'";
         $rs = $this->db->query($sql);
         if (!$rs) {
             return false;
@@ -151,43 +151,44 @@ class commentpost
 
     public function __delete()
     {
-        $sql = 'SELECT pcom_id FROM '.$this->db->prefix('newdb_comment')." WHERE com_id='".$this->cid."'";
-        $rs = $this->db->query($sql);
+        $sql = 'SELECT pcom_id FROM ' . $this->db->prefix('newdb_comment') . " WHERE com_id='" . $this->cid . "'";
+        $rs  = $this->db->query($sql);
         if ($rs) {
             $row = $this->db->fetchArray($rs);
             // topic top comment
             if ($row['pcom_id'] == 0) {
-                $sql = 'SELECT com_id FROM '.$this->db->prefix('newdb_comment')." WHERE pcom_id='".$this->cid."'";
-                $rs = $this->db->query($sql);
+                $sql = 'SELECT com_id FROM ' . $this->db->prefix('newdb_comment') . " WHERE pcom_id='" . $this->cid . "'";
+                $rs  = $this->db->query($sql);
                 if (!$rs) {
                     return false;
                 }
 
                 // if this has child
                 if ($this->db->getRowsNum($rs) > 0) {
-                    $sql = 'UPDATE '.$this->db->prefix('newdb_comment')." SET message='this comment was deleted.' WHERE com_id='".$this->cid."'";
-                    $rs = $this->db->queryF($sql);
+                    $sql = 'UPDATE ' . $this->db->prefix('newdb_comment') . " SET message='this comment was deleted.' WHERE com_id='" . $this->cid
+                           . "'";
+                    $rs  = $this->db->queryF($sql);
                     if (!$rs) {
                         return false;
                     }
                 } else {
-                    $sql = 'DELETE FROM '.$this->db->prefix('newdb_comment')." WHERE com_id='".$this->cid."'";
-                    $rs = $this->db->queryF($sql);
+                    $sql = 'DELETE FROM ' . $this->db->prefix('newdb_comment') . " WHERE com_id='" . $this->cid . "'";
+                    $rs  = $this->db->queryF($sql);
                     if (!$rs) {
                         return false;
                     }
 
-                    $sql = 'DELETE FROM '.$this->db->prefix('newdb_comment_topic')." WHERE com_id='".$this->cid."'";
-                    $rs = $this->db->queryF($sql);
+                    $sql = 'DELETE FROM ' . $this->db->prefix('newdb_comment_topic') . " WHERE com_id='" . $this->cid . "'";
+                    $rs  = $this->db->queryF($sql);
                     if (!$rs) {
                         return false;
                     }
                 }
 
-            // child comment
+                // child comment
             } else {
-                $sql = 'DELETE FROM '.$this->db->prefix('newdb_comment')." WHERE com_id='".$this->cid."'";
-                $rs = $this->db->queryF($sql);
+                $sql = 'DELETE FROM ' . $this->db->prefix('newdb_comment') . " WHERE com_id='" . $this->cid . "'";
+                $rs  = $this->db->queryF($sql);
                 if (!$rs) {
                     return false;
                 }
