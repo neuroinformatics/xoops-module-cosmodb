@@ -1,3 +1,5 @@
+tools:
+    php_cs_fixer: true
 checks:
     php:
         code_rating: true
