@@ -324,7 +324,7 @@ class listmanager
         }
 
         $sortbox .= "<input type='hidden' name='id' value='".$this->list_id."'>\n";
-        $sortbox .= "<input type='hidden' name='item' value='0;'>\n";
+        $sortbox .= "<input type='hidden' name='item' value='0'>\n";
         if ($this->refine_flg) {
             $sortbox .= "<input type='hidden' name='refine' value='usedb'>\n";
             $sortbox .= "<input type='hidden' name='user' value='".$this->uid."'>\n";
