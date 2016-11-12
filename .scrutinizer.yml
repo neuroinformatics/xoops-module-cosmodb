@@ -1,5 +1,12 @@
 tools:
     php_cs_fixer: true
+
+coding_style:
+    php:
+        indentation:
+            switch:
+                indent_case: false
+
 checks:
     php:
         code_rating: true
