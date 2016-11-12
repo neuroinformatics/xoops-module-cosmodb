@@ -1,4 +1,5 @@
 <?php
+
 if (!defined('XOOPS_ROOT_PATH')) {
     exit();
 }
@@ -14,17 +15,17 @@ function getRegList($dir, &$list, $flg = 1)
     if ($handle = opendir($dir)) {
         while (false !== $file = readdir($handle)) {
             if ($file !== '.' && $file !== '..') {
-                if (is_dir($dir . '/' . $file)) {
+                if (is_dir($dir.'/'.$file)) {
                     if (!$flg) {
-                        $sql = 'SELECT label_id FROM ' . $xoopsDB->prefix('newdb_master');
-                        $sql .= " WHERE label='" . $file . "'";
+                        $sql = 'SELECT label_id FROM '.$xoopsDB->prefix('newdb_master');
+                        $sql .= " WHERE label='".$file."'";
                         $rs = $xoopsDB->query($sql);
                         if ($xoopsDB->getRowsNum($rs) == 0) {
-                            $size        = floor(getDirSize($dir . '/' . $file, 0) / 1024);
+                            $size = floor(getDirSize($dir.'/'.$file, 0) / 1024);
                             $list[$file] = $size;
                         }
                     } else {
-                        $size        = floor(getDirSize($dir . '/' . $file, 0) / 1024);
+                        $size = floor(getDirSize($dir.'/'.$file, 0) / 1024);
                         $list[$file] = $size;
                     }
                 }
@@ -40,8 +41,10 @@ function getRegList($dir, &$list, $flg = 1)
  * getDirSize.
  *
  * return directory size.
+ *
  * @param $dir
  * @param $size
+ *
  * @return int
  */
 function getDirSize($dir, $size)
@@ -49,10 +52,10 @@ function getDirSize($dir, $size)
     if ($handle = opendir($dir)) {
         while (false !== $file = readdir($handle)) {
             if ($file !== '.' && $file !== '..') {
-                if (is_dir($dir . '/' . $file)) {
-                    $size = getDirSize($dir . '/' . $file, $size);
+                if (is_dir($dir.'/'.$file)) {
+                    $size = getDirSize($dir.'/'.$file, $size);
                 } else {
-                    $size += filesize($dir . '/' . $file);
+                    $size += filesize($dir.'/'.$file);
                 }
             }
         }

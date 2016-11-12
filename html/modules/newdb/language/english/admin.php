@@ -3,14 +3,6 @@
 define('_ND_ADMIN_ITEM', 'Admin menu');
 define('_ND_ADMIN_ITEM_DESC', 'Description');
 
-define('_ND_LIST_ADMIN', 'Setting List page');
-define('_ND_DETAIL_ADMIN', 'Setting Detail page');
-define('_ND_KEYWORD_ADMIN', 'Setting Keywords');
-define('_ND_COMPONENT_ADMIN', 'Setting Items');
-define('_ND_INHERITE_ADMIN', 'Data Inheritance');
-define('_ND_IMPORT_ADMIN', 'Import CSV');
-define('_ND_CONFIG', 'Preferences');
-
 define('_ND_LIST_ADMIN_DESC', 'setting display a list page ( list view, thumbnail view )');
 define('_ND_DETAIL_ADMIN_DESC', 'setting data detail page');
 define('_ND_KEYWORD_ADMIN_DESC', 'setting keywords which are used for refining data');

@@ -1,9 +1,10 @@
 <?php
-include __DIR__ . '/header.php';
-include __DIR__ . '/class/component.php';
-include __DIR__ . '/include/checkkeydir.php';
 
-$label_id = (int)$_GET['id'];
+include __DIR__.'/header.php';
+include __DIR__.'/class/component.php';
+include __DIR__.'/include/checkkeydir.php';
+
+$label_id = (int) $_GET['id'];
 if (!$label_id) {
     redirect_header(MOD_URL, 2, _ND_NACCESS);
 }
@@ -20,29 +21,29 @@ $com = new Component();
 if ($com->setLabelID($label_id)) {
     checkKeyDir($label_id);
 
-    $sql      = 'SELECT template FROM ' . $xoopsDB->prefix('newdb_detail');
-    $rs       = $xoopsDB->query($sql);
-    $row      = $xoopsDB->fetchArray($rs);
+    $sql = 'SELECT template FROM '.$xoopsDB->prefix('newdb_detail');
+    $rs = $xoopsDB->query($sql);
+    $row = $xoopsDB->fetchArray($rs);
     $template = "<script language='JavaScript' src='tab.js'></script>\n";
     $template .= "<script language='JavaScript' src='border.js'></script>\n";
     $template .= "<script language='JavaScript' src='clipboard.js'></script>\n";
-    $template .= "<div id='copy'></div>" . $row['template'];
+    $template .= "<div id='copy'></div>".$row['template'];
 
-    $sql   = 'SELECT reg_date,author,views FROM ' . $xoopsDB->prefix('newdb_master') . " WHERE label_id='" . $label_id . "'";
-    $rs    = $xoopsDB->query($sql);
-    $row   = $xoopsDB->fetchArray($rs);
-    $date  = date('Y-m-d', $row['reg_date']);
+    $sql = 'SELECT reg_date,author,views FROM '.$xoopsDB->prefix('newdb_master')." WHERE label_id='".$label_id."'";
+    $rs = $xoopsDB->query($sql);
+    $row = $xoopsDB->fetchArray($rs);
+    $date = date('Y-m-d', $row['reg_date']);
     $views = $row['views'] + 1;
 
     if ($uid != $row['author']) {
-        $sql = 'UPDATE ' . $xoopsDB->prefix('newdb_master');
-        $sql .= " SET views='" . $views . "' WHERE label_id='" . $label_id . "'";
+        $sql = 'UPDATE '.$xoopsDB->prefix('newdb_master');
+        $sql .= " SET views='".$views."' WHERE label_id='".$label_id."'";
         $rs2 = $xoopsDB->queryF($sql);
     }
 
-    $sql    = 'SELECT uname FROM ' . $xoopsDB->prefix('users') . " WHERE uid='" . $row['author'] . "'";
-    $rs     = $xoopsDB->query($sql);
-    $row    = $xoopsDB->fetchArray($rs);
+    $sql = 'SELECT uname FROM '.$xoopsDB->prefix('users')." WHERE uid='".$row['author']."'";
+    $rs = $xoopsDB->query($sql);
+    $row = $xoopsDB->fetchArray($rs);
     $author = $row['uname'];
 
     //## Basic Information
@@ -72,8 +73,8 @@ if ($com->setLabelID($label_id)) {
         $perm = 0;
         if ($uid) {
             foreach ($xoopsModuleConfig['access_perm'] as $group_id) {
-                $sql = 'SELECT uid FROM ' . $xoopsDB->prefix('groups_users_link');
-                $sql .= " WHERE groupid='" . $group_id . "'";
+                $sql = 'SELECT uid FROM '.$xoopsDB->prefix('groups_users_link');
+                $sql .= " WHERE groupid='".$group_id."'";
                 $rs = $xoopsDB->query($sql);
                 while ($row = $xoopsDB->fetchArray($rs)) {
                     if ($row['uid'] == $uid) {
@@ -83,7 +84,7 @@ if ($com->setLabelID($label_id)) {
             }
         }
         if ($perm && $xoopsModuleConfig['use_datafunc']) {
-            $tree     = $com->getDynamicMenu();
+            $tree = $com->getDynamicMenu();
             $template = str_replace('{Dtree}', $tree, $template);
         } else {
             $template = str_replace('{Dtree}', _ND_NACCESS2, $template);
@@ -115,25 +116,25 @@ if ($com->setLabelID($label_id)) {
     //## Link
 
     if (strstr($template, '{Link}')) {
-        $link     = $com->getLink($uid, $isadmin, $xoopsModuleConfig['dname_flg']);
+        $link = $com->getLink($uid, $isadmin, $xoopsModuleConfig['dname_flg']);
         $template = str_replace('{Link}', $link, $template);
     }
 
     //## Thumbnail
 
     if (strstr($template, '{Image ')) {
-        $st  = 0;
+        $st = 0;
         $end = 0;
         for (; ;) {
             $st = strpos($template, '{Image ', $end);
             if ($st > $end) {
-                $end    = strpos($template, '}', $st);
-                $image  = substr($template, $st, $end - $st + 1);
-                $tmp    = str_replace('{Image ', '', $image);
-                $tmp    = str_replace('}', '', $tmp);
+                $end = strpos($template, '}', $st);
+                $image = substr($template, $st, $end - $st + 1);
+                $tmp = str_replace('{Image ', '', $image);
+                $tmp = str_replace('}', '', $tmp);
                 $option = explode(' ', $tmp);
 
-                $thumb    = $com->getThumbnail(EXTRACT_PATH, XOOPS_URL, $option[0], $option[1]);
+                $thumb = $com->getThumbnail(EXTRACT_PATH, XOOPS_URL, $option[0], $option[1]);
                 $template = str_replace($image, $thumb, $template);
             } else {
                 break;
@@ -144,7 +145,7 @@ if ($com->setLabelID($label_id)) {
     //## Clipboard function
 
     if (strstr($template, '{Ref ')) {
-        $st  = 0;
+        $st = 0;
         $end = 0;
         for (; ;) {
             $st = strpos($template, '{Ref ', $end);
@@ -155,8 +156,8 @@ if ($com->setLabelID($label_id)) {
                 $perm = 0;
                 if ($uid) {
                     foreach ($xoopsModuleConfig['access_perm'] as $group_id) {
-                        $sql = 'SELECT uid FROM ' . $xoopsDB->prefix('groups_users_link');
-                        $sql .= " WHERE groupid='" . $group_id . "'";
+                        $sql = 'SELECT uid FROM '.$xoopsDB->prefix('groups_users_link');
+                        $sql .= " WHERE groupid='".$group_id."'";
                         $rs = $xoopsDB->query($sql);
                         while ($row = $xoopsDB->fetchArray($rs)) {
                             if ($row['uid'] == $uid) {
@@ -172,24 +173,24 @@ if ($com->setLabelID($label_id)) {
                     $suffix = str_replace('{Ref ', '', $ref);
                     $suffix = str_replace('}', '', $suffix);
 
-                    $path  = '';
-                    $sql   = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_master') . " WHERE label_id='" . $label_id . "'";
-                    $rs    = $xoopsDB->query($sql);
-                    $row   = $xoopsDB->fetchArray($rs);
+                    $path = '';
+                    $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_master')." WHERE label_id='".$label_id."'";
+                    $rs = $xoopsDB->query($sql);
+                    $row = $xoopsDB->fetchArray($rs);
                     $label = $row['label'];
 
-                    $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_item');
-                    $sql .= " WHERE label_id='" . $label_id . "' AND name like '%." . $suffix . "' AND type='file'";
+                    $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_item');
+                    $sql .= " WHERE label_id='".$label_id."' AND name like '%.".$suffix."' AND type='file'";
                     $rs = $xoopsDB->query($sql);
                     if ($xoopsDB->getRowsNum($rs)) {
                         while ($row = $xoopsDB->fetchArray($rs)) {
                             if (!empty($row['path'])) {
-                                $p = $row['path'] . '/';
+                                $p = $row['path'].'/';
                             } else {
                                 $p = '';
                             }
-                            $tmp = 'extract/' . $label_id . '/data/' . $p . $row['name'];
-                            $path .= "<a style='cursor: pointer;' onClick=\"javascript:setClipboard('" . $tmp . "')\">" . $row['name'] . '</a><br>';
+                            $tmp = 'extract/'.$label_id.'/data/'.$p.$row['name'];
+                            $path .= "<a style='cursor: pointer;' onClick=\"javascript:setClipboard('".$tmp."')\">".$row['name'].'</a><br>';
                         }
                     }
                 }
@@ -204,7 +205,7 @@ if ($com->setLabelID($label_id)) {
 
     if (strstr($template, '{AddBookmark}')) {
         if ($uid) {
-            $bookmark = "<a href='bookmark.php?lid=" . $label_id . "&mode=regbf'>";
+            $bookmark = "<a href='bookmark.php?lid=".$label_id."&mode=regbf'>";
             $bookmark .= "<img src='images/book.png' alt='add bookmark'></a>";
         } else {
             $bookmark = '';
@@ -216,7 +217,7 @@ if ($com->setLabelID($label_id)) {
 
     if (strstr($template, '{AddLink}')) {
         if ($uid) {
-            $link = "<a href='link.php?lid=" . $label_id . "'>";
+            $link = "<a href='link.php?lid=".$label_id."'>";
             $link .= "<img src='images/link.png' alt='add link'></a>";
         } else {
             $link = '';
@@ -227,12 +228,12 @@ if ($com->setLabelID($label_id)) {
     //## Config link
 
     if (strstr($template, '{Config}')) {
-        $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_master');
-        $sql .= " WHERE label_id='" . $label_id . "'";
-        $rs  = $xoopsDB->query($sql);
+        $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_master');
+        $sql .= " WHERE label_id='".$label_id."'";
+        $rs = $xoopsDB->query($sql);
         $row = $xoopsDB->fetchArray($rs);
         if ($row['author'] == $uid || $isadmin) {
-            $edit = "<a href='config.php?lid=" . $label_id . "'>";
+            $edit = "<a href='config.php?lid=".$label_id."'>";
             $edit .= "<img src='images/config.png' alt='config'></a>";
         } else {
             $edit = '';
@@ -246,8 +247,8 @@ if ($com->setLabelID($label_id)) {
         $perm = 0;
         if ($uid) {
             foreach ($xoopsModuleConfig['reg_perm'] as $group_id) {
-                $sql = 'SELECT uid FROM ' . $xoopsDB->prefix('groups_users_link');
-                $sql .= " WHERE groupid='" . $group_id . "'";
+                $sql = 'SELECT uid FROM '.$xoopsDB->prefix('groups_users_link');
+                $sql .= " WHERE groupid='".$group_id."'";
                 $rs = $xoopsDB->query($sql);
                 while ($row = $xoopsDB->fetchArray($rs)) {
                     if ($row['uid'] == $uid) {
@@ -257,7 +258,7 @@ if ($com->setLabelID($label_id)) {
             }
         }
         if ($perm && $xoopsModuleConfig['use_datafunc']) {
-            $dedit = "<a href='edata.php?lid=" . $label_id . "'>";
+            $dedit = "<a href='edata.php?lid=".$label_id."'>";
             $dedit .= "<img src='images/file.png' alt='file manager'></a>";
         } else {
             $dedit = '';
@@ -274,8 +275,8 @@ if ($com->setLabelID($label_id)) {
         $perm = 0;
         if ($uid) {
             foreach ($xoopsModuleConfig['access_perm'] as $group_id) {
-                $sql = 'SELECT uid FROM ' . $xoopsDB->prefix('groups_users_link');
-                $sql .= " WHERE groupid='" . $group_id . "'";
+                $sql = 'SELECT uid FROM '.$xoopsDB->prefix('groups_users_link');
+                $sql .= " WHERE groupid='".$group_id."'";
                 $rs = $xoopsDB->query($sql);
                 while ($row = $xoopsDB->fetchArray($rs)) {
                     if ($row['uid'] == $uid) {
@@ -285,29 +286,29 @@ if ($com->setLabelID($label_id)) {
             }
         }
         if ($perm && $xoopsModuleConfig['use_datafunc']) {
-            $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_item');
-            $sql .= " WHERE label_id='" . $label_id . "' AND type='file' ORDER BY reg_date DESC LIMIT 0,6";
+            $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_item');
+            $sql .= " WHERE label_id='".$label_id."' AND type='file' ORDER BY reg_date DESC LIMIT 0,6";
             $rs = $xoopsDB->query($sql);
             while ($row = $xoopsDB->fetchArray($rs)) {
-                $sql   = 'SELECT uname FROM ' . $xoopsDB->prefix('users') . " WHERE uid='" . $row['reg_user'] . "'";
-                $rs2   = $xoopsDB->query($sql);
-                $row2  = $xoopsDB->fetchArray($rs2);
-                $date  = date('m-d H:i', $row['reg_date']);
+                $sql = 'SELECT uname FROM '.$xoopsDB->prefix('users')." WHERE uid='".$row['reg_user']."'";
+                $rs2 = $xoopsDB->query($sql);
+                $row2 = $xoopsDB->fetchArray($rs2);
+                $date = date('m-d H:i', $row['reg_date']);
                 $uname = $row2['uname'];
-                $path  = $row['path'];
+                $path = $row['path'];
                 if (!empty($path)) {
                     $path .= '/';
                 }
 
                 $news .= "<tr style='text-align:left;'>";
-                $news .= "<td style='width:100px; border-bottom:1px dashed #ddd;'>" . $date . '</td>';
-                $news .= "<td style='border-bottom:1px dashed #ddd;'>" . $path . $row['name'] . ' </td>';
-                $news .= "<td style='width:12%; border-bottom:1px dashed #ddd;'>" . $uname . '</td>';
+                $news .= "<td style='width:100px; border-bottom:1px dashed #ddd;'>".$date.'</td>';
+                $news .= "<td style='border-bottom:1px dashed #ddd;'>".$path.$row['name'].' </td>';
+                $news .= "<td style='width:12%; border-bottom:1px dashed #ddd;'>".$uname.'</td>';
                 $news .= '</tr>';
             }
             if (!empty($news)) {
-                $news = '<table>' . $news . '</table>';
-                $news .= "<div style='text-align:right;'><a href='news.php?type=file&lid=" . $label_id . "'>" . _ND_CLASS_SHOWALL . '</a></div>';
+                $news = '<table>'.$news.'</table>';
+                $news .= "<div style='text-align:right;'><a href='news.php?type=file&lid=".$label_id."'>"._ND_CLASS_SHOWALL.'</a></div>';
             }
         } else {
             $news .= _ND_NACCESS2;
@@ -317,13 +318,13 @@ if ($com->setLabelID($label_id)) {
 
     //## Custom component value
 
-    $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_component_master');
-    $rs  = $xoopsDB->query($sql);
+    $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_component_master');
+    $rs = $xoopsDB->query($sql);
     while ($row = $xoopsDB->fetchArray($rs)) {
-        if (strstr($template, '{' . $row['name'] . '}')) {
-            $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_component');
-            $sql .= " WHERE label_id='" . $label_id . "' AND comp_id='" . $row['comp_id'] . "'";
-            $rs2   = $xoopsDB->query($sql);
+        if (strstr($template, '{'.$row['name'].'}')) {
+            $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_component');
+            $sql .= " WHERE label_id='".$label_id."' AND comp_id='".$row['comp_id']."'";
+            $rs2 = $xoopsDB->query($sql);
             $value = '';
             while ($row2 = $xoopsDB->fetchArray($rs2)) {
                 if ($value) {
@@ -342,7 +343,7 @@ if ($com->setLabelID($label_id)) {
                 }
                 $value .= $row2['value'];
             }
-            $template = str_replace('{' . $row['name'] . '}', $value, $template);
+            $template = str_replace('{'.$row['name'].'}', $value, $template);
         }
     }
 
@@ -350,15 +351,15 @@ if ($com->setLabelID($label_id)) {
 
     if (strstr($template, '{tab')) {
         for ($i = 1; ; ++$i) {
-            if (!strstr($template, '{tab' . $i . '}')) {
+            if (!strstr($template, '{tab'.$i.'}')) {
                 break;
             }
             if ($i == 1) {
-                $div = "<div id='detailbox" . $i . "'>";
+                $div = "<div id='detailbox".$i."'>";
             } else {
-                $div = "<div id='detailbox" . $i . "' style='display:none'>";
+                $div = "<div id='detailbox".$i."' style='display:none'>";
             }
-            $template = str_replace('{tab' . $i . '}', $div, $template);
+            $template = str_replace('{tab'.$i.'}', $div, $template);
         }
     }
     if (strstr($template, '{/tab}')) {
@@ -367,11 +368,11 @@ if ($com->setLabelID($label_id)) {
 
     if (strstr($template, '{href_tab')) {
         for ($i = 1; ; ++$i) {
-            if (!strstr($template, '{href_tab' . $i . '}')) {
+            if (!strstr($template, '{href_tab'.$i.'}')) {
                 break;
             }
-            $div      = "<a href=\"javascript:seltab('detailbox', 'head', 10, " . $i . ')">';
-            $template = str_replace('{href_tab' . $i . '}', $div, $template);
+            $div = "<a href=\"javascript:seltab('detailbox', 'head', 10, ".$i.')">';
+            $template = str_replace('{href_tab'.$i.'}', $div, $template);
         }
     }
     if (strstr($template, '{/href_tab}')) {
@@ -379,13 +380,13 @@ if ($com->setLabelID($label_id)) {
     }
 
     //## Show detail page
-    include XOOPS_ROOT_PATH . '/header.php';
+    include XOOPS_ROOT_PATH.'/header.php';
 
     $xoopsTpl->assign('xoops_pagetitle', $com->label);
 
-    include __DIR__ . '/style.css';
+    include __DIR__.'/style.css';
     echo $template;
-    include XOOPS_ROOT_PATH . '/footer.php';
+    include XOOPS_ROOT_PATH.'/footer.php';
 } else {
     redirect_header(MOD_URL, 2, $com->error());
 }

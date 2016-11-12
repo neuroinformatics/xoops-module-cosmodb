@@ -1,6 +1,6 @@
 <?php
 
-class DataEdit
+class dataedit
 {
     public $db;
     public $uid;
@@ -10,10 +10,10 @@ class DataEdit
 
     public function __construct($uid, $labelid, $label)
     {
-        $this->db      = XoopsDatabaseFactory::getDatabaseConnection();
-        $this->uid     = $uid;
+        $this->db = XoopsDatabaseFactory::getDatabaseConnection();
+        $this->uid = $uid;
         $this->labelid = $labelid;
-        $this->label   = $label;
+        $this->label = $label;
     }
 
     // return directory which exists in the database
@@ -39,16 +39,16 @@ class DataEdit
     public function getTrashlist($base_path)
     {
         $this->list = "<table class='list_table'>";
-        $trash_path = $base_path . '/' . $this->labelid . '/trashbox';
+        $trash_path = $base_path.'/'.$this->labelid.'/trashbox';
 
         if ($handle = opendir($trash_path)) {
             while (false !== $file = readdir($handle)) {
                 if ($file !== '.' && $file !== '..') {
-                    if (!is_dir($trash_path . '/' . $file)) {
+                    if (!is_dir($trash_path.'/'.$file)) {
                         $this->list .= "<tr><td class='even' style='width:5%; text-align:center;'>";
-                        $this->list .= "<input type='checkbox' name='data[]' value='" . $file . "'>";
+                        $this->list .= "<input type='checkbox' name='data[]' value='".$file."'>";
                         $this->list .= '</td><td>&nbsp;';
-                        $this->list .= "<img src='images/jmenu/page.gif'>" . $file;
+                        $this->list .= "<img src='images/jmenu/page.gif'>".$file;
                         $this->list .= '</td></tr>';
                     }
                 }
@@ -63,21 +63,21 @@ class DataEdit
 
     public function __getDirs($labelid, $dir, $n)
     {
-        $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_item');
-        $sql .= " WHERE label_id='" . $labelid . "' AND path='" . $dir . "' AND type='dir'";
+        $sql = 'SELECT * FROM '.$this->db->prefix('newdb_item');
+        $sql .= " WHERE label_id='".$labelid."' AND path='".$dir."' AND type='dir'";
         $rs = $this->db->query($sql);
         while ($row = $this->db->fetchArray($rs)) {
-            $this->list .= "<option value='" . $row['item_id'] . "'>";
+            $this->list .= "<option value='".$row['item_id']."'>";
             for ($i = 0; $i < $n; ++$i) {
                 $this->list .= '--';
             }
-            $this->list .= $row['name'] . '</option>';
+            $this->list .= $row['name'].'</option>';
 
             ++$n;
             if ($dir == '') {
                 $this->list .= $this->__getDirs($labelid, $row['name'], $n);
             } else {
-                $this->list .= $this->__getDirs($labelid, $dir . '/' . $row['name'], $n);
+                $this->list .= $this->__getDirs($labelid, $dir.'/'.$row['name'], $n);
             }
             --$n;
         }
@@ -85,35 +85,35 @@ class DataEdit
 
     public function __getItems($labelid, $dir, $n, $isadmin, $mode)
     {
-        $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_item');
-        $sql .= " WHERE label_id='" . $labelid . "' AND path='" . $dir . "' ORDER BY type";
+        $sql = 'SELECT * FROM '.$this->db->prefix('newdb_item');
+        $sql .= " WHERE label_id='".$labelid."' AND path='".$dir."' ORDER BY type";
         $rs = $this->db->query($sql);
         while ($row = $this->db->fetchArray($rs)) {
-            $iid  = $row['item_id'];
+            $iid = $row['item_id'];
             $type = $row['type'];
             $name = $row['name'];
 
-            $sql2  = 'SELECT uname FROM ' . $this->db->prefix('users') . " where uid='" . $row['reg_user'] . "'";
-            $rs2   = $this->db->query($sql2);
-            $row2  = $this->db->fetchArray($rs2);
+            $sql2 = 'SELECT uname FROM '.$this->db->prefix('users')." where uid='".$row['reg_user']."'";
+            $rs2 = $this->db->query($sql2);
+            $row2 = $this->db->fetchArray($rs2);
             $owner = $row2['uname'];
 
             if ($row['path'] != '') {
-                $path = $row['path'] . '/' . $name;
+                $path = $row['path'].'/'.$name;
             } else {
                 $path = $name;
             }
 
-            $tr       = "<tr><td class='even' style='width:5%; text-align:center;'>";
+            $tr = "<tr><td class='even' style='width:5%; text-align:center;'>";
             $checkbox = '';
             if ($this->uid == $row['reg_user'] || $isadmin) {
-                $checkbox = "<input type='checkbox' name='data[]' value='" . $iid . "'>";
+                $checkbox = "<input type='checkbox' name='data[]' value='".$iid."'>";
             }
             $sp = '';
             for ($i = 0; $i < $n; ++$i) {
                 $sp .= '&nbsp;&nbsp;&nbsp;';
             }
-            $td = '</td><td>&nbsp;' . $sp;
+            $td = '</td><td>&nbsp;'.$sp;
 
             if ($type === 'dir') {
                 $this->list .= $tr;
@@ -122,14 +122,14 @@ class DataEdit
                 }
                 $this->list .= $td;
 
-                $this->list .= "<img src='images/jmenu/fold_closed.gif'>" . $name;
-                $this->list .= "</td><td style='width:120px;'>" . $owner;
+                $this->list .= "<img src='images/jmenu/fold_closed.gif'>".$name;
+                $this->list .= "</td><td style='width:120px;'>".$owner;
 
                 ++$n;
                 if ($dir == '') {
                     $this->list .= $this->__getItems($labelid, $name, $n, $isadmin, $mode);
                 } else {
-                    $this->list .= $this->__getItems($labelid, $dir . '/' . $name, $n, $isadmin, $mode);
+                    $this->list .= $this->__getItems($labelid, $dir.'/'.$name, $n, $isadmin, $mode);
                 }
                 --$n;
 
@@ -139,8 +139,8 @@ class DataEdit
                     $this->list .= $tr;
                     $this->list .= $checkbox;
                     $this->list .= $td;
-                    $this->list .= "<img src='images/jmenu/page.gif'>" . $name;
-                    $this->list .= "</td><td style='width:120px;'>" . $owner;
+                    $this->list .= "<img src='images/jmenu/page.gif'>".$name;
+                    $this->list .= "</td><td style='width:120px;'>".$owner;
                     $this->list .= '</td></tr>';
                 }
             }
@@ -149,18 +149,18 @@ class DataEdit
 
     public function moveFiles($file, $dir, $base_path)
     {
-        $base_path2 = $base_path . '/' . $this->labelid . '/data';
-        $dpath      = $base_path2 . '/' . $dir;
+        $base_path2 = $base_path.'/'.$this->labelid.'/data';
+        $dpath = $base_path2.'/'.$dir;
 
         foreach ($file as $k => $v) {
-            $path = $base_path2 . '/' . $v;
-            $f    = explode('/', $v);
+            $path = $base_path2.'/'.$v;
+            $f = explode('/', $v);
             $file = $f[count($f) - 1];
 
             if (file_exists($path)) {
-                if (copy($path, $dpath . '/' . $file) && unlink($path)) {
-                    $sql = 'UPDATE ' . $this->db->prefix('newdb_item') . " SET path='" . $dir . "' WHERE item_id='" . $k . "'";
-                    $rs  = $this->db->query($sql);
+                if (copy($path, $dpath.'/'.$file) && unlink($path)) {
+                    $sql = 'UPDATE '.$this->db->prefix('newdb_item')." SET path='".$dir."' WHERE item_id='".$k."'";
+                    $rs = $this->db->query($sql);
                 }
             }
         }
@@ -168,19 +168,19 @@ class DataEdit
 
     public function moveDirs($target, $dir, $base_path)
     {
-        $base_path2 = $base_path . '/' . $this->labelid . '/data';
+        $base_path2 = $base_path.'/'.$this->labelid.'/data';
         if (!empty($dir)) {
-            $dpath = $base_path2 . '/' . $dir;
+            $dpath = $base_path2.'/'.$dir;
         } else {
             $dpath = $base_path2;
         }
 
         foreach ($target as $k => $v) {
-            $from = $base_path2 . '/' . $v;
-            $f    = explode('/', $v);
-            $d    = $f[count($f) - 1];
+            $from = $base_path2.'/'.$v;
+            $f = explode('/', $v);
+            $d = $f[count($f) - 1];
             if (is_dir($from)) {
-                $this->__moveDirs($from, $dpath . '/' . $d, $base_path2);
+                $this->__moveDirs($from, $dpath.'/'.$d, $base_path2);
             }
         }
     }
@@ -215,34 +215,34 @@ class DataEdit
         }
         //echo $to_name."<br>".$to_path."<br><br>";
 
-        $sql = 'UPDATE ' . $this->db->prefix('newdb_item') . " SET path='" . $to_path . "'";
-        $sql .= " WHERE name='" . $from_name . "' AND path='" . $from_path . "'";
-        $sql .= " AND label_id='" . $this->labelid . "' AND type='dir'";
+        $sql = 'UPDATE '.$this->db->prefix('newdb_item')." SET path='".$to_path."'";
+        $sql .= " WHERE name='".$from_name."' AND path='".$from_path."'";
+        $sql .= " AND label_id='".$this->labelid."' AND type='dir'";
         $rs = $this->db->query($sql);
 
         if ($handle = opendir($from)) {
             while (false !== $file = readdir($handle)) {
                 if ($file !== '.' && $file !== '..') {
-                    if (is_dir($from . '/' . $file)) {
-                        $this->__moveDirs($from . '/' . $file, $to . '/' . $file, $base_path);
+                    if (is_dir($from.'/'.$file)) {
+                        $this->__moveDirs($from.'/'.$file, $to.'/'.$file, $base_path);
                     } else {
-                        if (copy($from . '/' . $file, $to . '/' . $file)) {
+                        if (copy($from.'/'.$file, $to.'/'.$file)) {
                             $t_path = $to_name;
                             if (!empty($to_path)) {
-                                $t_path = $to_path . '/' . $to_name;
+                                $t_path = $to_path.'/'.$to_name;
                             }
 
                             $f_path = $from_name;
                             if (!empty($from_path)) {
-                                $f_path = $from_path . '/' . $from_name;
+                                $f_path = $from_path.'/'.$from_name;
                             }
 
-                            $sql = 'UPDATE ' . $this->db->prefix('newdb_item') . " SET path='" . $t_path . "'";
-                            $sql .= " WHERE name='" . $file . "' AND path='" . $f_path . "'";
-                            $sql .= " AND label_id='" . $this->labelid . "' AND type='file'";
+                            $sql = 'UPDATE '.$this->db->prefix('newdb_item')." SET path='".$t_path."'";
+                            $sql .= " WHERE name='".$file."' AND path='".$f_path."'";
+                            $sql .= " AND label_id='".$this->labelid."' AND type='file'";
                             $rs = $this->db->query($sql);
 
-                            unlink($from . '/' . $file);
+                            unlink($from.'/'.$file);
                         }
                     }
                 }
@@ -257,18 +257,18 @@ class DataEdit
     // move file into a trashbox
     public function toTrash($dir, $file, $base_path)
     {
-        $base_path2 = $base_path . '/' . $this->labelid;
+        $base_path2 = $base_path.'/'.$this->labelid;
         foreach ($dir as $k => $v) {
-            ($v == '') ? $path = $base_path2 . '/data/' . $k : $path = $base_path2 . '/data/' . $v . '/' . $k;
+            ($v == '') ? $path = $base_path2.'/data/'.$k : $path = $base_path2.'/data/'.$v.'/'.$k;
             if (is_dir($path)) {
-                $this->__toTrash($path, $base_path2 . '/trashbox');
+                $this->__toTrash($path, $base_path2.'/trashbox');
             }
         }
 
         foreach ($file as $k => $v) {
-            ($v == '') ? $path = $base_path2 . '/data/' . $k : $path = $base_path2 . '/data/' . $v . '/' . $k;
+            ($v == '') ? $path = $base_path2.'/data/'.$k : $path = $base_path2.'/data/'.$v.'/'.$k;
             if (file_exists($path)) {
-                if (copy($path, $base_path2 . '/trashbox/' . $k)) {
+                if (copy($path, $base_path2.'/trashbox/'.$k)) {
                     unlink($path);
                 }
             }
@@ -282,11 +282,11 @@ class DataEdit
         if ($handle = opendir($from)) {
             while (false !== $file = readdir($handle)) {
                 if ($file !== '.' && $file !== '..') {
-                    if (is_dir($from . '/' . $file)) {
-                        $this->__toTrash($from . '/' . $file, $to);
+                    if (is_dir($from.'/'.$file)) {
+                        $this->__toTrash($from.'/'.$file, $to);
                     } else {
-                        if (copy($from . '/' . $file, $to . '/' . $file)) {
-                            unlink($from . '/' . $file);
+                        if (copy($from.'/'.$file, $to.'/'.$file)) {
+                            unlink($from.'/'.$file);
                         }
                     }
                 }
@@ -302,30 +302,30 @@ class DataEdit
     public function fromTrash($dir, $file, $base_path)
     {
         if ($dir == '0') {
-            $dpath   = '';
-            $to_path = $base_path . '/' . $this->labelid . '/data';
+            $dpath = '';
+            $to_path = $base_path.'/'.$this->labelid.'/data';
         } else {
-            $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_item');
-            $sql .= " WHERE item_id='" . $dir . "'";
-            $rs      = $this->db->query($sql);
-            $row     = $this->db->fetchArray($rs);
-            $dpath   = $row['path'] . '/' . $row['name'];
-            $to_path = $base_path . '/' . $this->labelid . '/data/' . $dpath;
+            $sql = 'SELECT * FROM '.$this->db->prefix('newdb_item');
+            $sql .= " WHERE item_id='".$dir."'";
+            $rs = $this->db->query($sql);
+            $row = $this->db->fetchArray($rs);
+            $dpath = $row['path'].'/'.$row['name'];
+            $to_path = $base_path.'/'.$this->labelid.'/data/'.$dpath;
         }
 
-        $trash_path = $base_path . '/' . $this->labelid . '/trashbox';
+        $trash_path = $base_path.'/'.$this->labelid.'/trashbox';
         if (!is_dir($to_path)) {
             return false;
         }
 
         for ($i = 0, $iMax = count($file); $i < $iMax; ++$i) {
-            if (!file_exists($trash_path . '/' . $file[$i])) {
+            if (!file_exists($trash_path.'/'.$file[$i])) {
                 continue;
             }
-            if (copy($trash_path . '/' . $file[$i], $to_path . '/' . $file[$i])) {
-                unlink($trash_path . '/' . $file[$i]);
-                $sql = 'INSERT INTO ' . $this->db->prefix('newdb_item');
-                $sql .= " VALUES('','" . $this->labelid . "','file','" . $file[$i] . "','" . $dpath . "','" . time() . "','" . $this->uid . "')";
+            if (copy($trash_path.'/'.$file[$i], $to_path.'/'.$file[$i])) {
+                unlink($trash_path.'/'.$file[$i]);
+                $sql = 'INSERT INTO '.$this->db->prefix('newdb_item');
+                $sql .= " VALUES('','".$this->labelid."','file','".$file[$i]."','".$dpath."','".time()."','".$this->uid."')";
                 $rs = $this->db->query($sql);
             }
         }
@@ -337,12 +337,12 @@ class DataEdit
     // relative funcution : synchroDatabase() => regdatabase.php
     public function synchroData($base_path)
     {
-        $sql = 'SELECT * FROM ' . $this->db->prefix('newdb_item') . " WHERE label_id='" . $this->labelid . "'";
-        $rs  = $this->db->query($sql);
+        $sql = 'SELECT * FROM '.$this->db->prefix('newdb_item')." WHERE label_id='".$this->labelid."'";
+        $rs = $this->db->query($sql);
         while ($row = $this->db->fetchArray($rs)) {
-            $path = $base_path . '/' . $this->labelid . '/data/' . $row['path'] . '/' . $row['name'];
+            $path = $base_path.'/'.$this->labelid.'/data/'.$row['path'].'/'.$row['name'];
             if (!file_exists($path)) {
-                $sql = 'DELETE FROM ' . $this->db->prefix('newdb_item') . " WHERE item_id='" . $row['item_id'] . "'";
+                $sql = 'DELETE FROM '.$this->db->prefix('newdb_item')." WHERE item_id='".$row['item_id']."'";
                 $rs2 = $this->db->query($sql);
             }
         }

@@ -1,18 +1,18 @@
 <?php
 
-include __DIR__ . '/header.php';
-include __DIR__ . '/class/commentpost.php';
+include __DIR__.'/header.php';
+include __DIR__.'/class/commentpost.php';
 
 if (!$uid && !$xoopsModuleConfig['guest_post']) {
     redirect_header(MOD_URL, 2, _ND_NACCESS);
 }
 
-$method  = '';
+$method = '';
 $subject = '';
 $message = '';
-$type    = '';
-$lid     = -1;
-$cid     = -1;
+$type = '';
+$lid = -1;
+$cid = -1;
 $preview = 0;
 
 if (isset($_GET['method'])) {
@@ -21,9 +21,9 @@ if (isset($_GET['method'])) {
         $type = $myts->stripSlashesGPC($_GET['type']);
     }
     if (isset($_GET['lid'])) {
-        $lid = (int)$_GET['lid'];
+        $lid = (int) $_GET['lid'];
     } elseif (isset($_GET['cid'])) {
-        $cid = (int)$_GET['cid'];
+        $cid = (int) $_GET['cid'];
     }
 } elseif (isset($_POST['method'])) {
     $method = $myts->stripSlashesGPC($_POST['method']);
@@ -31,16 +31,16 @@ if (isset($_GET['method'])) {
         $type = $myts->stripSlashesGPC($_POST['type']);
     }
     if (isset($_POST['lid'])) {
-        $lid = (int)$_POST['lid'];
+        $lid = (int) $_POST['lid'];
     } elseif (isset($_POST['cid'])) {
-        $cid = (int)$_POST['cid'];
+        $cid = (int) $_POST['cid'];
     }
 }
 
 // check user
 if ($cid > 0 && !$isadmin && $method !== 'new') {
-    $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_comment');
-    $sql .= " WHERE com_id='" . $cid . "'";
+    $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_comment');
+    $sql .= " WHERE com_id='".$cid."'";
     $rs = $xoopsDB->query($sql);
     if ($xoopsDB->getRowsNum($rs) > 0) {
         $row = $xoopsDB->fetchArray($rs);
@@ -54,8 +54,8 @@ if ($cid > 0 && !$isadmin && $method !== 'new') {
 
 // check author comment post permission
 if ($cid > 0 && $method === 'new') {
-    $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_comment_topic');
-    $sql .= " WHERE com_id='" . $cid . "'";
+    $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_comment_topic');
+    $sql .= " WHERE com_id='".$cid."'";
     $rs = $xoopsDB->query($sql);
     if ($xoopsDB->getRowsNum($rs) > 0) {
         $row = $xoopsDB->fetchArray($rs);
@@ -70,18 +70,18 @@ if ($cid > 0 && $method === 'new') {
 // submit (new, edit, reply)
 if (isset($_POST['submit']) || $method === 'delete2') {
     if ($cid > 0) {
-        $sql = 'SELECT pcom_id FROM ' . $xoopsDB->prefix('newdb_comment') . " WHERE com_id='" . $cid . "'";
-        $rs  = $xoopsDB->query($sql);
+        $sql = 'SELECT pcom_id FROM '.$xoopsDB->prefix('newdb_comment')." WHERE com_id='".$cid."'";
+        $rs = $xoopsDB->query($sql);
         $row = $xoopsDB->fetchArray($rs);
 
         if ($row['pcom_id'] == 0) {
-            $sql = 'SELECT label_id FROM ' . $xoopsDB->prefix('newdb_comment_topic') . " WHERE com_id='" . $cid . "'";
+            $sql = 'SELECT label_id FROM '.$xoopsDB->prefix('newdb_comment_topic')." WHERE com_id='".$cid."'";
         } else {
-            $sql = 'SELECT label_id FROM ' . $xoopsDB->prefix('newdb_comment_topic') . " WHERE com_id='" . $row['pcom_id'] . "'";
+            $sql = 'SELECT label_id FROM '.$xoopsDB->prefix('newdb_comment_topic')." WHERE com_id='".$row['pcom_id']."'";
         }
-        $rs  = $xoopsDB->query($sql);
+        $rs = $xoopsDB->query($sql);
         $row = $xoopsDB->fetchArray($rs);
-        $id  = $row['label_id'];
+        $id = $row['label_id'];
     } else {
         $id = $lid;
     }
@@ -116,17 +116,17 @@ if (isset($_POST['submit'])) {
             }
             if (count($mail)) {
                 $sitename = '';
-                $sql      = 'SELECT conf_value FROM ' . $xoopsDB->prefix('config') . " WHERE conf_name='sitename'";
-                $rs       = $xoopsDB->query($sql);
-                $row      = $xoopsDB->fetchArray($rs);
+                $sql = 'SELECT conf_value FROM '.$xoopsDB->prefix('config')." WHERE conf_name='sitename'";
+                $rs = $xoopsDB->query($sql);
+                $row = $xoopsDB->fetchArray($rs);
                 $sitename = $row['conf_value'];
 
-                $rs  = $xoopsDB->query('SELECT uname FROM ' . $xoopsDB->prefix('users') . " WHERE uid='" . $uid . "'");
+                $rs = $xoopsDB->query('SELECT uname FROM '.$xoopsDB->prefix('users')." WHERE uid='".$uid."'");
                 $row = $xoopsDB->fetchArray($rs);
 
-                $msgs_comment = $row['uname'] . " wrote:\n\n";
-                $msgs_comment .= $cp->message . "\n\n";
-                $msgs_comment .= date('Y-m-d H:i') . "\n";
+                $msgs_comment = $row['uname']." wrote:\n\n";
+                $msgs_comment .= $cp->message."\n\n";
+                $msgs_comment .= date('Y-m-d H:i')."\n";
                 $msgs_comment .= "-----------\n";
                 $msgs_comment .= XOOPS_URL;
 
@@ -146,7 +146,7 @@ if (isset($_POST['submit'])) {
         $user = new XoopsUser($uid);
         $user->incrementPost();
     } else {
-        $ms = _ND_COMMENT_NPOST . '<br>' . $cp->error();
+        $ms = _ND_COMMENT_NPOST.'<br>'.$cp->error();
     }
 
     // submit(delete)
@@ -165,7 +165,7 @@ if (isset($_POST['submit'])) {
 }
 
 if (isset($_POST['submit']) || $method === 'delete2') {
-    redirect_header(XOOPS_URL . '/modules/newdb/detail.php?id=' . $id, 2, $ms);
+    redirect_header(XOOPS_URL.'/modules/newdb/detail.php?id='.$id, 2, $ms);
 }
 
 // preview
@@ -178,10 +178,10 @@ if (isset($_POST['preview']) || $_GET['method'] === 'edit') {
         }
         $message = $_POST['message'];
     } else {
-        $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_comment') . " WHERE com_id='" . $cid . "'";
-        $rs  = $xoopsDB->query($sql);
+        $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_comment')." WHERE com_id='".$cid."'";
+        $rs = $xoopsDB->query($sql);
         if ($rs) {
-            $row     = $xoopsDB->fetchArray($rs);
+            $row = $xoopsDB->fetchArray($rs);
             $subject = $row['subject'];
             $message = $row['message'];
         }
@@ -190,13 +190,13 @@ if (isset($_POST['preview']) || $_GET['method'] === 'edit') {
     $subject4show = $myts->makeTboxData4Preview($subject);
     $message4show = $myts->makeTareaData4Preview($message, 0);
 
-    include XOOPS_ROOT_PATH . '/header.php';
-    include __DIR__ . '/style.css';
+    include XOOPS_ROOT_PATH.'/header.php';
+    include __DIR__.'/style.css';
     echo "<table class='list_table'>";
     if ($type !== 'auth') {
-        echo "<tr><td class='even'>" . $subject4show . '</td></tr>';
+        echo "<tr><td class='even'>".$subject4show.'</td></tr>';
     }
-    echo '<tr><td><br>' . $message4show . '<br></td></tr>';
+    echo '<tr><td><br>'.$message4show.'<br></td></tr>';
     echo '</table><br><br>';
 
     $subject = $myts->makeTboxData4PreviewInForm($subject);
@@ -209,54 +209,54 @@ switch ($method) {
     case 'new':
         if (!$preview) {
             if ($cid != -1) {
-                $sql     = 'SELECT subject FROM ' . $xoopsDB->prefix('newdb_comment') . " WHERE com_id='" . $cid . "'";
-                $rs      = $xoopsDB->query($sql);
-                $row     = $xoopsDB->fetchArray($rs);
-                $subject = 'Re:' . $myts->makeTboxData4PreviewInForm($row['subject']);
+                $sql = 'SELECT subject FROM '.$xoopsDB->prefix('newdb_comment')." WHERE com_id='".$cid."'";
+                $rs = $xoopsDB->query($sql);
+                $row = $xoopsDB->fetchArray($rs);
+                $subject = 'Re:'.$myts->makeTboxData4PreviewInForm($row['subject']);
             }
-            include XOOPS_ROOT_PATH . '/header.php';
-            include __DIR__ . '/style.css';
+            include XOOPS_ROOT_PATH.'/header.php';
+            include __DIR__.'/style.css';
         }
-        include __DIR__ . '/include/commentform.inc.php';
-        include XOOPS_ROOT_PATH . '/footer.php';
+        include __DIR__.'/include/commentform.inc.php';
+        include XOOPS_ROOT_PATH.'/footer.php';
         break;
 
     case 'edit':
         if (!$preview) {
-            include XOOPS_ROOT_PATH . '/header.php';
-            include __DIR__ . '/style.css';
+            include XOOPS_ROOT_PATH.'/header.php';
+            include __DIR__.'/style.css';
         }
-        include __DIR__ . '/include/commentform.inc.php';
-        include XOOPS_ROOT_PATH . '/footer.php';
+        include __DIR__.'/include/commentform.inc.php';
+        include XOOPS_ROOT_PATH.'/footer.php';
         break;
 
     case 'delete':
-        include XOOPS_ROOT_PATH . '/header.php';
-        include __DIR__ . '/style.css';
-        $sql = 'SELECT * FROM ' . $xoopsDB->prefix('newdb_comment') . " WHERE com_id='" . $cid . "'";
-        $rs  = $xoopsDB->query($sql);
+        include XOOPS_ROOT_PATH.'/header.php';
+        include __DIR__.'/style.css';
+        $sql = 'SELECT * FROM '.$xoopsDB->prefix('newdb_comment')." WHERE com_id='".$cid."'";
+        $rs = $xoopsDB->query($sql);
         if ($rs) {
-            $row          = $xoopsDB->fetchArray($rs);
+            $row = $xoopsDB->fetchArray($rs);
             $subject4show = $myts->makeTboxData4Preview($row['subject']);
             $message4show = $myts->makeTareaData4Preview($row['message'], 0);
 
             echo "<table class='list_table'>";
-            echo "<tr><td class='even'>" . $subject4show . '</td></tr>';
-            echo '<tr><td><br>' . $message4show . '<br></td></tr>';
+            echo "<tr><td class='even'>".$subject4show.'</td></tr>';
+            echo '<tr><td><br>'.$message4show.'<br></td></tr>';
             echo '</table><br><br>';
             echo _ND_COMMENT_CONFIRM;
 
             if ($type === 'auth') {
-                echo "<a href='comment.php?method=delete2&cid=" . $cid . "&type=auth'>YES</a>";
+                echo "<a href='comment.php?method=delete2&cid=".$cid."&type=auth'>YES</a>";
             } else {
-                echo "<a href='comment.php?method=delete2&cid=" . $cid . "'>YES</a>";
+                echo "<a href='comment.php?method=delete2&cid=".$cid."'>YES</a>";
             }
             echo " / <a href='javascript:history.back()'>NO</a>";
         } else {
-            redirect_header(XOOPS_URL . '/modules/newdb/index.php', 1, _ND_COMMENT_NEXIST);
+            redirect_header(XOOPS_URL.'/modules/newdb/index.php', 1, _ND_COMMENT_NEXIST);
         }
 
-        include XOOPS_ROOT_PATH . '/footer.php';
+        include XOOPS_ROOT_PATH.'/footer.php';
         break;
 
     default:

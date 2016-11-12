@@ -9,7 +9,7 @@ function makeClone($oldName, $newName)
     while (($ent = $dir->read()) !== false) {
         if (is_file($ent) && $ent !== 'clone.php' && $ent !== 'clone.php~') {
             echo "Modified: $ent <br>";
-            $orgFile = '_' . $ent;
+            $orgFile = '_'.$ent;
             copy($ent, $orgFile);
 
             $fp = fopen($orgFile, 'r');
@@ -36,10 +36,10 @@ function makeClone($oldName, $newName)
 
 $oldName = 'newdb';
 
-$dir       = getcwd();
-$str       = strstr($dir, 'newdb');
-$pos       = strpos($str, 'extension');
-$newName   = substr($str, 0, $pos - 1);
+$dir = getcwd();
+$str = strstr($dir, 'newdb');
+$pos = strpos($str, 'extension');
+$newName = substr($str, 0, $pos - 1);
 $newNumber = substr($newName, 5);
 
 // newdb/extension dir
@@ -93,11 +93,11 @@ echo 'Modified database name<br>';
 // newdb/language
 chdir('language');
 chdir('english');
-$newModule = 'CosmoDB' . $newNumber;
+$newModule = 'CosmoDB'.$newNumber;
 makeClone('CosmoDB', $newModule);
 chdir('..');
 chdir('japanese');
-$newModule = 'CosmoDB' . $newNumber;
+$newModule = 'CosmoDB'.$newNumber;
 makeClone('CosmoDB', $newModule);
 chdir('..');
 chdir('..');
@@ -109,9 +109,9 @@ echo 'Modified module name <br>';
 chdir('images');
 copy('logo.gif', 'logo00.gif');
 if ($newNumber + 0 < 10) {
-    $newLogo = 'logo0' . $newNumber . '.gif';
+    $newLogo = 'logo0'.$newNumber.'.gif';
 } else {
-    $newLogo = 'logo' . $newNumber . '.gif';
+    $newLogo = 'logo'.$newNumber.'.gif';
 }
 copy($newLogo, 'logo.gif');
 chdir('..');

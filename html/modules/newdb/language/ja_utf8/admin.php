@@ -3,14 +3,6 @@
 define('_ND_ADMIN_ITEM', '管理項目');
 define('_ND_ADMIN_ITEM_DESC', '説明');
 
-define('_ND_LIST_ADMIN', '一覧表示設定');
-define('_ND_DETAIL_ADMIN', '詳細画面設定');
-define('_ND_KEYWORD_ADMIN', 'キーワード設定');
-define('_ND_COMPONENT_ADMIN', '項目設定');
-define('_ND_INHERITE_ADMIN', 'データ継承');
-define('_ND_IMPORT_ADMIN', 'CSVインポート');
-define('_ND_CONFIG', '一般設定');
-
 define('_ND_LIST_ADMIN_DESC', '一覧表示画面の設定（リスト形式、サムネイル形式）');
 define('_ND_DETAIL_ADMIN_DESC', '各登録データ詳細画面の設定');
 define('_ND_KEYWORD_ADMIN_DESC', '各データに付加するキーワードの設定');

@@ -1,8 +1,5 @@
-<?php
-echo <<<E
 <style>
-
-          .list_table {
+.list_table {
     text-align: left;
     border-collapse: collapse;
     border: 1px solid #dedbde;
@@ -45,7 +42,4 @@ echo <<<E
     text-align: right;
     font-size: 12px;
 }
-
 </style>
-  E;
-  ?>
