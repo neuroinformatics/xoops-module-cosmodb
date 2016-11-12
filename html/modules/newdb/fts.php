@@ -28,7 +28,7 @@ if (!$andor) {
     echo "<option value='0' selected> AND</option>";
     echo "<option value='1'> OR</option>";
 } else {
-    echo "<option value='0;'> AND</option>";
+    echo "<option value='0'> AND</option>";
     echo "<option value='1' selected> OR</option>";
 }
 echo '</select> ';

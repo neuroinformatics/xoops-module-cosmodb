@@ -377,7 +377,7 @@ class listmanager
             if ($this->type == 2) {
                 $val .= "<input type='hidden' name='size' value='".$this->thumb_active_size[0]."'>\n";
             }
-            $val .= "<input type='hidden' name='item' value='0;'>\n";
+            $val .= "<input type='hidden' name='item' value='0'>\n";
             $val .= "<input type='hidden' name='sort' value='".$this->sort_target."'>\n";
             $val .= "<input type='hidden' name='sort_method' value='".$this->sort_method."'>\n";
             $val .= "<input type='hidden' name='n' value='".$this->limit."'>\n";
@@ -594,7 +594,7 @@ class listmanager
         $retv .= "<input type='hidden' name='sort_method' value='".$this->sort_method."'>\n";
         $retv .= "<input type='hidden' name='id' value='".$this->list_id."'>\n";
         $retv .= "<input type='hidden' name='n' value='".$this->limit."'>\n";
-        $retv .= "<input type='hidden' name='item' value='0;'>\n";
+        $retv .= "<input type='hidden' name='item' value='0'>\n";
         $retv .= "<input type='hidden' name='refine' value='y'>\n";
         $retv .= "<input type='hidden' name='user' value='".$this->uid."'>\n";
         if ($this->refine_flg) {

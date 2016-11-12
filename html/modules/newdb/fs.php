@@ -41,14 +41,14 @@ if (isset($_GET['kw']) && !isset($_GET['st'])) {
 
 echo "<form action='fs.php' method='GET' style='text-align:center;'>";
 echo "<input type='text' name='kw' style='width:40%' value='".$kw."'> ";
-echo "<input type='hidden' name='andor' value='0;'>";
+echo "<input type='hidden' name='andor' value='0'>";
 /*
     echo "<select name='andor'>";
     if(!$andor){
         echo "<option value='0' selected> AND</option>";
         echo "<option value='1'> OR</option>";
     }else{
-        echo "<option value='0;'> AND</option>";
+        echo "<option value='0'> AND</option>";
         echo "<option value='1' selected> OR</option>";
     }
     echo "</select> ";

@@ -19,7 +19,7 @@ class dataedit
     // return directory which exists in the database
     public function getDirlist()
     {
-        $this->list = "<option value='0;'>Top</option>";
+        $this->list = "<option value='0'>Top</option>";
         $this->__getDirs($this->labelid, '', 0);
 
         return $this->list;

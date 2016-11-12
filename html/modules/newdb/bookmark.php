@@ -102,7 +102,7 @@ switch ($mode) {
         echo "<tr><td class='even' style='width:100px;'><b>"._ND_BK_DIR.'</b></td>';
         echo "<td><input type='text' name='dir_name'></td></tr>";
         echo "<tr><td class='even'><b>"._ND_BK_ORDER.'</b></td>';
-        echo "<td><input type='text' name='sort' size='4' value='0;'></td></tr>";
+        echo "<td><input type='text' name='sort' size='4' value='0'></td></tr>";
         echo "<tr><td class='even'><b>"._ND_BK_CLASS.'</b></td><td>';
         echo "<input type='radio' name='where' value='0' checked> "._ND_BK_TOP;
         echo "<input type='radio' name='where' value='".$bd_id."'>"._ND_BK_SUB;
@@ -149,7 +149,7 @@ switch ($mode) {
         echo "<tr><td class='even'><b>"._ND_BK_MOVE.'</b></td><td>';
         echo "<select name='newbd'>";
         echo "<option value='no'>"._ND_BK_NMOVE.'</option>';
-        echo "<option value='0;'>"._ND_BK_GOTOP.'</option>';
+        echo "<option value='0'>"._ND_BK_GOTOP.'</option>';
         echo "<option value='no'>-------------</option>";
 
         $bd_array = explode(',', $bm->checkChildDir($bd_id, $bd_id.','));
