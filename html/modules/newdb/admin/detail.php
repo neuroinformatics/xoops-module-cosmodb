@@ -54,7 +54,7 @@ function Detail_top($url)
     echo "<table class='list_table' style='width:550px;'>";
     echo '<tr><th>'._ND_DETAIL_TEMP.'</th></tr>';
     echo '<tr><td><center>';
-    echo "<textarea style='width:100%; height:400px;' name='template;'>".$row['template'].'</textarea>';
+    echo "<textarea style='width:100%; height:400px;' name='template'>".$row['template'].'</textarea>';
     echo '</center></td></tr>';
     echo '</table>';
 
