@@ -2,8 +2,8 @@
 
 include __DIR__.'/../../mainfile.php';
 
-define('MOD_URL', XOOPS_URL.'/modules/newdb');
-define('MOD_PATH', XOOPS_ROOT_PATH.'/modules/newdb');
+define('MOD_URL', XOOPS_URL.'/modules/'.basename(__DIR__));
+define('MOD_PATH', XOOPS_ROOT_PATH.'/modules/'.basename(__DIR__));
 define('EXTRACT_PATH', MOD_PATH.'/extract');
 define('UPLOAD_PATH', MOD_PATH.'/upload');
 define('MAX_UPLOAD_SIZE', $xoopsModuleConfig['upload_limit']);
